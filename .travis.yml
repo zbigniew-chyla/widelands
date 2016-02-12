@@ -1,5 +1,5 @@
 language: cpp
-before_script: bash -e .travis.sh
+before_install: bash -e .travis.sh
 sudo: required
 dist: trusty
 
