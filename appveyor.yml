@@ -56,8 +56,3 @@ platform:
 
 configuration:
   - Release
-<<<<<<< 518c8edbcc6f71d78b679c71c47dac0812d0d70a
-  - Debug
-=======
-
->>>>>>> lets try appveyor and coverity
