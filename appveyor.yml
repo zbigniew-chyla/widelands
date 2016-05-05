@@ -14,7 +14,7 @@ init:
 install:
   # Installing various utilities
   - cinst InnoSetup
-  #- choco install -y PublishCoverity
+  - cmd: nuget install PublishCoverity
   - cmd: "set PATH=%MINGWPATH%;C:\\msys64\\usr\\bin;C:\\Program Files (x86)\\Inno Setup 5;%PATH%"
   - cmd: "set CC=%MINGWPATH%\\gcc.exe"
   - cmd: "set CXX=%MINGWPATH%\\g++.exe"
