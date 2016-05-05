@@ -10,6 +10,7 @@ export CXX="g++-5" CC="gcc-5";
 
 until sudo apt-get install -qq --force-yes -y \
    cmake \
+   ninja-build \
    libboost-all-dev \
    libglew-dev \
    libicu-dev \
