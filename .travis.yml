@@ -24,6 +24,6 @@ addons:
       name: "widelands/widelands"
       description: "Build submitted via Travis CI"
     notification_email: mail@example.com
-    build_command_prepend: "mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE:STRING=\"$BUILD_TYPE\""
-    build_command: "make -k -j1"
+    build_command_prepend: "mkdir build && cd build && cmake -G Ninja .. -DCMAKE_BUILD_TYPE:STRING=\"$BUILD_TYPE\""
+    build_command: "ninja"
     branch_pattern: coverity_scan
