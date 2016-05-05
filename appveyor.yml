@@ -4,7 +4,10 @@
 #   Appveyor build configuration  #
 ###################################
 
+environment:
   CoverityProjectToken:
+    secure: ilVyFbbr7tyi3dzLa+D0v017A52Vgs5O4gf2jYlCWA4=
+
 init:
   - cmd: "IF \"%PLATFORM%\" == \"x86\" (set MINGWPATH=C:\\msys64\\mingw32\\bin& set MINGWSUFFIX=i686) ELSE (set MINGWPATH=C:\\msys64\\mingw64\\bin& set MINGWSUFFIX=x86_64)"
 
@@ -37,6 +40,8 @@ build_script:
   - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
   - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
   - cmd: cov-build --dir cov-int ninja
+  - cmd: PublishCoverity compress -o coverity.zip -i cov-int
+  - cmd: PublishCoverity publish -z coverity.zip -r widelands/widelands -t %CoverityProjectToken% -d "AppVeyor scheduled build." --codeVersion %APPVEYOR_BUILD_VERSION%
 
 on_success:
   - cmd: strip -sv %APPVEYOR_BUILD_FOLDER%\build\src\widelands.exe
