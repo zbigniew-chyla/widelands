@@ -6,6 +6,7 @@ dist: trusty
 branches:
   except:
     - _widelands_dev_widelands_trunk
+    - coverity_scan
 
 env:
   global:

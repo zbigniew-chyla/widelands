@@ -4,12 +4,14 @@
 #   Appveyor build configuration  #
 ###################################
 
+  CoverityProjectToken:
 init:
   - cmd: "IF \"%PLATFORM%\" == \"x86\" (set MINGWPATH=C:\\msys64\\mingw32\\bin& set MINGWSUFFIX=i686) ELSE (set MINGWPATH=C:\\msys64\\mingw64\\bin& set MINGWSUFFIX=x86_64)"
 
 install:
   # Installing various utilities
   - choco install -y InnoSetup
+  - choco install -y PublishCoverity
   - cmd: "set PATH=%MINGWPATH%;C:\\msys64\\usr\\bin;C:\\Program Files (x86)\\Inno Setup 5;%PATH%"
   - cmd: "set CC=%MINGWPATH%\\gcc.exe"
   - cmd: "set CXX=%MINGWPATH%\\g++.exe"
@@ -34,7 +36,7 @@ build_script:
   - cmd: cd build
   - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
   - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
-  - cmd: ninja
+  - cmd: cov-build --dir cov-int ninja
 
 on_success:
   - cmd: strip -sv %APPVEYOR_BUILD_FOLDER%\build\src\widelands.exe
@@ -47,9 +49,7 @@ artifacts:
 
 platform: 
   - x64
-  - x86
 
 configuration:
   - Release
-  - Debug
 
