@@ -23,6 +23,7 @@ install:
   # Use binary SDL2 librarby from libsdl.org
   - ps: (new-object net.webclient).DownloadFile('https://libsdl.org/release/SDL2-devel-2.0.4-mingw.tar.gz', 'C:\\SDL2-devel-2.0.4-mingw.tar.gz')
   - ps: "7z x \"C:\\SDL2-devel-2.0.4-mingw.tar.gz\" -so | 7z x -aoa -si -ttar -bb0 -oC:\\"
+  - cmd: "set SDL2DIR=C:\\SDL2-2.0.4"
 
 shallow_clone: true
 
@@ -35,7 +36,7 @@ build_script:
   - cmd: md build
   - cmd: cd build
   - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
-  - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON -DSDL2_INCLUDE_DIR=C:\\SDL2-2.0.4\\i686-w64-mingw32\\include\\SDL2 -DSDL2_LIBRARY_TEMP=C:\\SDL2-2.0.4\\i686-w64-mingw32\\lib %APPVEYOR_BUILD_FOLDER%"
+  - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
   - cmd: ninja
 
 on_success:
