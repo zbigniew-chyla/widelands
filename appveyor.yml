@@ -22,7 +22,7 @@ install:
   - cmd: "bash --login -c \"pacman --noconfirm -S mingw-w64-%MINGWSUFFIX%-ninja mingw-w64-%MINGWSUFFIX%-boost mingw-w64-%MINGWSUFFIX%-SDL2_net mingw-w64-%MINGWSUFFIX%-SDL2_ttf mingw-w64-%MINGWSUFFIX%-SDL2_mixer mingw-w64-%MINGWSUFFIX%-SDL2_image mingw-w64-%MINGWSUFFIX%-glbinding\""
   # Use binary SDL2 librarby from libsdl.org
   - ps: (new-object net.webclient).DownloadFile('https://libsdl.org/release/SDL2-devel-2.0.4-mingw.tar.gz', 'C:\\SDL2-devel-2.0.4-mingw.tar.gz')
-  - ps: 7z x "C:\\SDL2-devel-2.0.4-mingw.tar.gz" -so | "7z x -aoa -si -ttar -bb0 -oC:"
+  - ps: "7z x \"C:\\Temp\\SDL2-devel-2.0.4-mingw.tar.gz\" -so | 7z x -aoa -si -ttar -bb0 -oC:\\"
 
 shallow_clone: true
 
