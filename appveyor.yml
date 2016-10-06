@@ -37,7 +37,7 @@ build_script:
   # TODO(Tino): Optimize WL build scripts to use less memory/no cyclic dependencies
   - cmd: echo %PLATFORM%
   - cmd: echo %APPVEYOR_BUILD_VERSION%
-  - cmd: "IF \"%PLATFORM%\" == \"x64\" (IF \"%APPVEYOR_BUILD_VERSION%\" == \"Debug\" (echo ninja -j 1) ELSE (echo ninja)) ELSE (echo ninja)"
+  - cmd: "IF \"%PLATFORM%\" == \"x64\" (IF \"%CONFIGURATION%\" == \"Debug\" (echo ninja -j 1) ELSE (echo ninja)) ELSE (echo ninja)"
 
 on_success:
   - cmd: strip -sv %APPVEYOR_BUILD_FOLDER%\build\src\widelands.exe
