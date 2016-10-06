@@ -35,6 +35,8 @@ build_script:
   - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
   # Appveyor does not provide enough memory to build/link thex64 debug build in parallel (Oct 2016)
   # TODO(Tino): Optimize WL build scripts to use less memory/no cyclic dependencies
+  - cmd: echo %PLATFORM%
+  - cmd: echo %APPVEYOR_BUILD_VERSION%
   - cmd: "IF \"%PLATFORM%\" == \"x64\" (IF \"%APPVEYOR_BUILD_VERSION%\" == \"Debug\" (echo ninja -j 1) ELSE (echo ninja)) ELSE (echo ninja)"
 
 on_success:
