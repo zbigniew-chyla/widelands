@@ -10,6 +10,7 @@ tags
 /build
 update.sh
 widelands
+wl_map*_info
 locale
 VERSION
 
@@ -24,3 +25,6 @@ VERSION
 
 # QT Creator settings
 CMakeLists.txt.user*
+
+# Translation validation files
+po_validation
