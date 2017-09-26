@@ -31,6 +31,7 @@ shallow_clone: true
 branches:
   except:
     - _widelands_dev_widelands_trunk
+    - coverity_scan
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
