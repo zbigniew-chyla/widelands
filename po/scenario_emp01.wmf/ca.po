@@ -1,15 +1,15 @@
 # Widelands PATH/TO/FILE.PO
-# Copyright (C) 2005-2016 Widelands Development Team
+# Copyright (C) 2005-2017 Widelands Development Team
 # 
 # Translators:
-# Juanjo, 2015-2016
+# Juanjo, 2015-2017
 # Juanjo, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Widelands\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/widelands\n"
-"POT-Creation-Date: 2016-03-02 08:54+0000\n"
-"PO-Revision-Date: 2016-03-02 11:47+0000\n"
+"POT-Creation-Date: 2017-05-12 13:53+0000\n"
+"PO-Revision-Date: 2017-05-16 21:44+0000\n"
 "Last-Translator: Juanjo\n"
 "Language-Team: Catalan (http://www.transifex.com/widelands/widelands/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -99,7 +99,7 @@ msgstr "Un cavaller fosc"
 #: ../../data/campaigns/emp01.wmf/scripting/texts.lua:112
 #: ../../data/campaigns/emp01.wmf/scripting/texts.lua:225
 msgid "Diary of Lutius"
-msgstr "Diari de Lutius"
+msgstr "Diari d'en Lutius"
 
 #. TRANSLATORS: Lutius - Diary
 #: ../../data/campaigns/emp01.wmf/scripting/texts.lua:81
@@ -312,7 +312,7 @@ msgstr "Tinc dues coses importants a dir-vos. Primer, les bones notícies:"
 #: ../../data/campaigns/emp01.wmf/scripting/texts.lua:186
 msgid ""
 "I noticed that the construction of the sawmill is complete, so we can begin "
-"to refine the logs that the lumberjacks are harvesting into lumber."
+"to refine the logs that the lumberjacks are harvesting into planks."
 msgstr "He vist que s'ha acabat de construir la serradora. Ja podem refinar els troncs que talen els llenyataires i fer-ne taulons."
 
 #. TRANSLATORS: Amalea
@@ -320,7 +320,7 @@ msgstr "He vist que s'ha acabat de construir la serradora. Ja podem refinar els 
 msgid ""
 "But the bad news is that our lumberjacks harvest at an incredible speed. "
 "There are almost no trees left on this island."
-msgstr "Però la mala notícia és que els nostres llenyataires treballen molt ràpid: ja quasi no queden arbres a l'illa."
+msgstr "Però la mala notícia és que els nostres llenyataires treballen molt de pressa: ja quasi no queden arbres a l'illa."
 
 #. TRANSLATORS: Amalea
 #: ../../data/campaigns/emp01.wmf/scripting/texts.lua:192
@@ -432,7 +432,7 @@ msgstr "Senyor, heu fet d'aquesta península un lloc molt segur. És hora de con
 msgid "“%s”"
 msgstr "“%s”"
 
-#: ../../data/scripting/format_scenario.lua:146
+#: ../../data/scripting/format_scenario.lua:84
 msgid "New Objective"
 msgid_plural "New Objectives"
 msgstr[0] "Objectiu"

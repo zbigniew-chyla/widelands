@@ -31,7 +31,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      prohibited_till = 1200
+      prohibited_till = 690
    },
 
    working_positions = {
@@ -39,7 +39,7 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      log = 8
+      { name = "log", amount = 8 }
    },
    outputs = {
       "coal"

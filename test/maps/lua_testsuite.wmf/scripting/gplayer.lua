@@ -59,6 +59,30 @@ function player_vision_tests:test_sees_field_see_all_hide()
    assert_equal(true, player1:sees_field(self.f))
 end
 
+-- This test must go last, because we change the state of player1:seen_field.
+function player_vision_tests:test_hide_completely()
+   player1.see_all = true
+   assert_equal(true, player1:sees_field(self.f))
+   player1.see_all = false
+   assert_equal(false, player1:sees_field(self.f))
+
+   player1:hide_fields(self.f:region(1), false)
+   game.desired_speed = 0;
+   assert_equal(false, player1:sees_field(self.f))
+   assert_equal(true, player1:seen_field(self.f))
+
+   player1.see_all = true
+   assert_equal(true, player1:sees_field(self.f))
+   player1.see_all = false
+   assert_equal(false, player1:sees_field(self.f))
+
+   player1:hide_fields(self.f:region(1), true)
+   game.desired_speed = 0;
+   assert_equal(false, player1:sees_field(self.f))
+   assert_equal(false, player1:seen_field(self.f))
+   player1:reveal_fields(self.f:region(1))
+end
+
 
 -- =========================
 -- Forbid & Allow buildings
@@ -143,4 +167,17 @@ function player_building_access:test_access()
    assert_equal(b3, rv.barbarians_quarry[1])
    b1.fields[1].brn.immovable:remove()
    assert_equal(1, #player1:get_buildings("barbarians_lumberjacks_hut"))
+end
+-- ================
+-- Players production statistics
+-- ================
+player_production_statistics = lunit.TestCase("Players production statistics")
+function player_building_access:test_single()
+   self.bs = {
+      player1:place_building("barbarians_lumberjacks_hut", map:get_field(10,10)),
+      player1:place_building("barbarians_lumberjacks_hut", map:get_field(13,10)),
+      player1:place_building("barbarians_quarry", map:get_field(8,10)),
+   }
+
+   assert_equal((player1:get_produced_wares_count('all'))['log'], player1:get_produced_wares_count('log'))
 end

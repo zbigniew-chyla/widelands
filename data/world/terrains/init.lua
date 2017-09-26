@@ -1,90 +1,181 @@
--- Categories for the editor.
-world:new_editor_terrain_category{
-   name = "green",
-   descname = _ "Summer",
-   picture = "world/pics/editor_terrain_category_green.png",
-}
-world:new_editor_terrain_category{
-   name = "wasteland",
-   descname = _ "Wasteland",
-   picture = "world/pics/editor_terrain_category_wasteland.png",
-}
-world:new_editor_terrain_category{
-   name = "winter",
-   descname = _ "Winter",
-   picture = "world/pics/editor_terrain_category_winter.png",
-}
-world:new_editor_terrain_category{
-   name = "desert",
-   descname = _ "Desert",
-   picture = "world/pics/editor_terrain_category_desert.png",
-}
+-- RST
+-- .. _lua_world_terrains:
+--
+-- Terrains
+-- --------
+--
+-- Terrains define the basic look of the map, and all terrains are defined in ``data/world/terrains/init.lua``.
+--
+-- .. code-block:: none
+--
+--         *-------*
+--        / \     / \
+--       /   \   /   \
+--      /     \ /     \
+--     *-------*-------*
+--      \     / \     /
+--       \   /   \   /
+--        \ /     \ /
+--         *-------*
+--
+-- Terrain tiles have a triangular shape, and 6 of them will be combined to form a hexagon. Each vertex between the terrains (* in the figure) will form a node that is influenced by the 6 terrains surrounding it, and where other map entities can be placed. You can find more information on the terrains' shape and on how to create textures on the `wiki <https://wl.widelands.org/wiki/HelpTerrains/>`_.
+--
+-- Each terrain tile will also influence some properties for the map entities that are placed on its 3 vertices, like:
+--
+-- * Which resources can go on a map node.
+-- * How well which type of tree will grow on a map node.
+-- * Which map objects can be built on the nodes or move through them.
+
+pics_dir = path.dirname(__file__) .. "pics/"
+
+-- RST
+-- .. function:: new_terrain_type{table}
+--
+--    This function adds the definition of a terrain to the engine.
+--
+--    :arg table: This table contains all the data that the game engine will add
+--       to this terrain. It contains the following entries:
+--
+--    **name**
+--        *Mandatory*. A string containing the internal name of this terrain, e.g.::
+--
+--            name = "summer_meadow1",
+--
+--    **descname**
+--        *Mandatory*. The translatable display name, e.g.::
+--
+--            descname = _"Meadow 1",
+--
+--    **editor_category**
+--        *Mandatory*. The category that is used in the editor tools for placing a
+--        terrain of this type on the map, e.g.::
+--
+--            editor_category = "summer",
+--
+--    **is**
+--        *Mandatory*. The type of this terrain, which determines if the nodes
+--        surrounding the terrain will be walkable or navigable, if mines or buildings
+--        can be built on them, if flags can be built on them, and so on.
+--        The following properties are available:
+--
+--         * ``arable``: Allows building of normal buildings and roads.
+--         * ``mineable``: Allows building of mines and roads.
+--         * ``walkable``: Allows building of flags and roads only.
+--         * ``water``: Nothing can be built here, but ships and aquatic animals can pass.
+--         * ``unreachable``: Nothing can be built here, and nothing can walk on it,
+--           and nothing will grow.
+--         * ``unwalkable``: Nothing can be built here, and nothing can walk on it.
+--
+--        Example::
+--
+--           is = "arable",
+--
+--        *Note: There is currently some interdependency between ``is`` and
+--        ``valid_resources``, so not all combinations are possible. See*
+--        `Bug 1505345 <https://bugs.launchpad.net/widelands/+bug/1505345>`_
+--        *for more information.*
+--
+--    **tooltips**
+--        *Optional*. Additional custom tooltip entries, e.g.::
+--
+--            tooltips = {
+--               -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+--               _"likes trees",
+--            },
+--
+--    **valid_resources**
+--        *Mandatory*. The list of mineable resources that can be found on this terrain.
+--        Leave this empty (``{}``) if you want no resources on this terrain. Example::
+--
+--            valid_resources = {"water"},
+--
+--        *Note: There is currently some interdependency between ``is`` and
+--        ``valid_resources``, so not all combinations are possible. See*
+--        `Bug #1505345 <https://bugs.launchpad.net/widelands/+bug/1505345/>`_
+--        *for more information.*
+--
+--    **default_resource**
+--        *Mandatory*. A resource type that can always be found on this terrain when
+--        a new game is started, unless the map maker places some resources there via
+--        the editor. Use the empty string
+--        (``""``) if you want no default resource. Example::
+--
+--            default_resource = "water",
+--
+--    **default_resource_amount**
+--        *Mandatory*. The amount of the above default resource that will
+--        automatically be placed on this terrain, e.g.::
+--
+--            default_resource_amount = 10,
+--
+--    **textures**
+--        *Mandatory*. The images used for this terrain. Examples::
+--
+--            textures = { pics_dir .. "summer/meadow1_00.png" }, - A static terrain
+--            textures = path.list_files(pics_dir .. "summer/lava/lava_??.png"), -- An animated terrain
+--
+--    **dither_layer**
+--        *Mandatory*. Terrains will be blended slightly over each other in order
+--        to hide the harsh edges of the triangles. This describes the
+--        `z layer <https://en.wikipedia.org/wiki/Z-order>`_ of a terrain when
+--        rendered next to another terrain. Terrains with a higher value will be
+--        dithered on top of terrains with a lower value. Example::
+--
+--            dither_layer = 340,
+--
+--    **temperature**
+--        *Mandatory*. A terrain affinity constant. These are used to model how well
+--        trees will grow on this terrain. Temperature is in arbitrary units. Example::
+--
+--            temperature = 100,
+--
+--    **humidity**
+--        *Mandatory*. A terrain affinity constant. These are used to model how well
+--        trees will grow on this terrain. Humidity is in percent (1 being very wet).
+--        Example::
+--
+--            humidity = 0.6,
+--
+--    **fertility**
+--        *Mandatory*. A terrain affinity constant. These are used to model how well
+--        trees will grow on this terrain. Fertility is in percent (1 being very
+--        fertile). Example::
+--
+--            fertility = 0.7,
+--
 
 ------------------------
 --  Former greenland  --
 ------------------------
 
-pics_dir = path.dirname(__file__) .. "pics/"
 world:new_terrain_type{
-   -- The internal name of this terrain.
-   name = "wiese1",
-
-   -- The name that will be used in UI and translated.
+   name = "summer_meadow1",
    descname = _ "Meadow 1",
-
-   -- The category for sorting this into menus in the editor.
-   editor_category = "green",
-
-   -- Type of terrain. Describes if the terrain is walkable, swimmable, if
-   -- mines or buildings can be build on it, if flags can be build on it and so
-   -- on.
-   --
-   -- The following properties are available:
-   -- "arable": Allows building of normal buildings and roads
-   -- "mineable": Allows building of mines and roads
-   -- "walkable": Allows building of roads only.
-   -- "water": Nothing can be built here, but ships and aquatic animals can pass
-   -- "unreachable": Nothing can be built here, and nothing can walk on it, and nothing will grow.
-   -- "unwalkable": Nothing can be built here, and nothing can walk on it
+   editor_category = "summer",
    is = "arable",
-
-   -- You can add custom additional tooltip entries here.
    tooltips = {
       -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
       _"likes trees",
    },
 
-   -- The list resources that can be found in this terrain.
    valid_resources = {"water"},
-
-   -- The resources that is always in this terrain (if not overwritten by the
-   -- map maker through the editor) and the amount.
    default_resource = "water",
    default_resource_amount = 10,
 
-   -- The images used for this terrain.
-   textures = { pics_dir .. "green/wiese1_00.png" },
+   textures = { pics_dir .. "summer/meadow1_00.png" },
 
-   -- This describes the z layer of the terrain when rendered next to another
-   -- one and blending slightly over it to hide the triangles.
    dither_layer = 340,
 
-   -- Terrain affinity constants. This is used to model how well plants grow on this terrain.
-   -- Temperature is in arbitrary units.
    temperature = 100,
-
-   -- Humidity is in percent (1 being very wet).
    humidity = 0.6,
-
-   -- Fertility is in percent (1 being very fertile).
    fertility = 0.7,
 }
 
 
 world:new_terrain_type{
-   name = "wiese2",
+   name = "summer_meadow2",
    descname = _ "Meadow 2",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    tooltips = {
       -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
@@ -93,7 +184,7 @@ world:new_terrain_type{
    valid_resources = {"water"},
    default_resource = "water",
    default_resource_amount = 10,
-   textures = { pics_dir .. "green/wiese2_00.png" },
+   textures = { pics_dir .. "summer/meadow2_00.png" },
    dither_layer = 350,
    temperature = 100,
    humidity = 0.6,
@@ -103,9 +194,9 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "wiese3",
+   name = "summer_meadow3",
    descname = _ "Meadow 3",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    tooltips = {
       -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
@@ -114,7 +205,7 @@ world:new_terrain_type{
    valid_resources = {"water"},
    default_resource = "water",
    default_resource_amount = 10,
-   textures = { pics_dir .. "green/wiese3_00.png" },
+   textures = { pics_dir .. "summer/meadow3_00.png" },
    dither_layer = 350,
    temperature = 105,
    humidity = 0.55,
@@ -123,9 +214,9 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "wiese4",
+   name = "summer_meadow4",
    descname = _ "Meadow 4",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    tooltips = {
       -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
@@ -134,7 +225,7 @@ world:new_terrain_type{
    valid_resources = {"water"},
    default_resource = "water",
    default_resource_amount = 10,
-   textures = { pics_dir .. "green/wiese4_00.png" },
+   textures = { pics_dir .. "summer/meadow4_00.png" },
    dither_layer = 350,
    temperature = 110,
    humidity = 0.65,
@@ -143,14 +234,14 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "steppe",
+   name = "summer_steppe",
    descname = _ "Steppe",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    valid_resources = { "water" },
    default_resource = "water",
    default_resource_amount = 5,
-   textures = { pics_dir .. "green/steppe_00.png" },
+   textures = { pics_dir .. "summer/steppe_00.png" },
    dither_layer = 330,
    temperature = 100,
    humidity = 0.4,
@@ -159,14 +250,14 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "steppe_kahl",
+   name = "summer_steppe_barren",
    descname = _ "Barren Steppe",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    valid_resources = {"water"},
    default_resource = "water",
    default_resource_amount = 4,
-   textures = { pics_dir .. "green/steppe_kahl_00.png" },
+   textures = { pics_dir .. "summer/steppe_barren_00.png" },
    dither_layer = 320,
    temperature = 100,
    humidity = 0.15,
@@ -175,89 +266,24 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "bergwiese",
+   name = "summer_mountain_meadow",
    descname = _ "Mountain Meadow",
-   editor_category = "green",
+   editor_category = "summer",
    is = "arable",
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "green/bergwiese_00.png" },
+   textures = { pics_dir .. "summer/mountain_meadow_00.png" },
    dither_layer = 160,
    temperature = 75,
    humidity = 0.8,
    fertility = 0.45,
 }
 
-
-world:new_terrain_type{
-   name = "berg1",
-   descname = _ "Mountain 1",
-   editor_category = "green",
-   is = "mineable",
-   valid_resources = { "coal", "iron", "gold", "stones" },
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "green/berg1_00.png" },
-   dither_layer = 70,
-   temperature = 80,
-   humidity = 0.1,
-   fertility = 0.1,
-}
-
-
-world:new_terrain_type{
-   name = "berg2",
-   descname = _ "Mountain 2",
-   editor_category = "green",
-   is = "mineable",
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "green/berg2_00.png" },
-   dither_layer = 70,
-   temperature = 80,
-   humidity = 0.1,
-   fertility = 0.1,
-}
-
-
-world:new_terrain_type{
-   name = "berg3",
-   descname = _ "Mountain 3",
-   editor_category = "green",
-   is = "mineable",
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "green/berg3_00.png" },
-   dither_layer = 70,
-   temperature = 80,
-   humidity = 0.1,
-   fertility = 0.1,
-}
-
-
-world:new_terrain_type{
-   name = "berg4",
-   descname = _ "Mountain 4",
-   editor_category = "green",
-   is = "mineable",
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "green/berg4_00.png" },
-   dither_layer = 70,
-   temperature = 80,
-   humidity = 0.1,
-   fertility = 0.1,
-}
-
-
 world:new_terrain_type{
    name = "summer_forested_mountain1",
    descname = _ "Forested Mountain 1",
-   editor_category = "green",
+   editor_category = "summer",
    is = "mineable",
    -- You can add custom additional tooltip entries here.
    tooltips = {
@@ -267,7 +293,7 @@ world:new_terrain_type{
    valid_resources = {"coal", "iron", "gold", "stones"},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "green/forested_mountain1_00.png" },
+   textures = { pics_dir .. "summer/forested_mountain1_00.png" },
    dither_layer = 71,
    temperature = 50,
    humidity = 0.75,
@@ -277,7 +303,7 @@ world:new_terrain_type{
 world:new_terrain_type{
    name = "summer_forested_mountain2",
    descname = _ "Forested Mountain 2",
-   editor_category = "green",
+   editor_category = "summer",
    is = "mineable",
    -- You can add custom additional tooltip entries here.
    tooltips = {
@@ -287,7 +313,7 @@ world:new_terrain_type{
    valid_resources = {"coal", "iron", "gold", "stones"},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "green/forested_mountain2_00.png" },
+   textures = { pics_dir .. "summer/forested_mountain2_00.png" },
    dither_layer = 71,
    temperature = 50,
    humidity = 0.75,
@@ -295,44 +321,107 @@ world:new_terrain_type{
 }
 
 world:new_terrain_type{
-   name = "sumpf",
+   name = "summer_mountain1",
+   descname = _ "Mountain 1",
+   editor_category = "summer",
+   is = "mineable",
+   valid_resources = { "coal", "iron", "gold", "stones" },
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "summer/mountain1_00.png" },
+   dither_layer = 70,
+   temperature = 80,
+   humidity = 0.1,
+   fertility = 0.1,
+}
+
+
+world:new_terrain_type{
+   name = "summer_mountain2",
+   descname = _ "Mountain 2",
+   editor_category = "summer",
+   is = "mineable",
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "summer/mountain2_00.png" },
+   dither_layer = 70,
+   temperature = 80,
+   humidity = 0.1,
+   fertility = 0.1,
+}
+
+
+world:new_terrain_type{
+   name = "summer_mountain3",
+   descname = _ "Mountain 3",
+   editor_category = "summer",
+   is = "mineable",
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "summer/mountain3_00.png" },
+   dither_layer = 70,
+   temperature = 80,
+   humidity = 0.1,
+   fertility = 0.1,
+}
+
+
+world:new_terrain_type{
+   name = "summer_mountain4",
+   descname = _ "Mountain 4",
+   editor_category = "summer",
+   is = "mineable",
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "summer/mountain4_00.png" },
+   dither_layer = 70,
+   temperature = 80,
+   humidity = 0.1,
+   fertility = 0.1,
+}
+
+world:new_terrain_type{
+   name = "summer_beach",
+   descname = _ "Beach",
+   editor_category = "summer",
+   is = "walkable",
+   valid_resources = {},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "summer/beach_00.png" },
+   dither_layer = 60,
+   temperature = 120,
+   humidity = 0.6,
+   fertility = 0.2,
+}
+
+world:new_terrain_type{
+   name = "summer_swamp",
    descname = _ "Swamp",
-   editor_category = "green",
+   editor_category = "summer",
    is = "unwalkable",
    valid_resources = {"water"},
    default_resource = "water",
    default_resource_amount = 20,
-   textures = path.list_files(pics_dir .. "green/sumpf_??.png"),
+   textures = path.list_files(pics_dir .. "summer/swamp/swamp_??.png"),
    dither_layer = 370,
    fps = 14,
    temperature = 105,
    humidity = 0.999,
    fertility = 0.1,
 }
-
 world:new_terrain_type{
-   name = "strand",
-   descname = _ "Beach",
-   editor_category = "green",
-   is = "walkable",
-   valid_resources = {},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "green/strand_00.png" },
-   dither_layer = 60,
-   temperature = 120,
-   humidity = 0.6,
-   fertility = 0.2,
-}
-world:new_terrain_type{
-   name = "schnee",
+   name = "summer_snow",
    descname = _ "Snow",
-   editor_category = "green",
+   editor_category = "summer",
    is = "unreachable",
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "green/schnee_00.png" },
+   textures = { pics_dir .. "summer/snow_00.png" },
    dither_layer = 220,
    temperature = 50,
    humidity = 0.999,
@@ -343,12 +432,12 @@ world:new_terrain_type{
 world:new_terrain_type{
    name = "lava",
    descname = _ "Lava",
-   editor_category = "green",
+   editor_category = "summer",
    is = "unreachable",
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = path.list_files(pics_dir .. "green/lava_??.png"),
+   textures = path.list_files(pics_dir .. "summer/lava/lava_??.png"),
    dither_layer = 30,
    fps = 4,
    temperature = 1273.0,
@@ -358,14 +447,14 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "wasser",
+   name = "summer_water",
    descname = _ "Water",
-   editor_category = "green",
+   editor_category = "summer",
    is = "water",
    valid_resources = {"fish"},
    default_resource = "fish",
    default_resource_amount = 4,
-   textures = path.list_files(pics_dir .. "green/wasser_??.png"),
+   textures = path.list_files(pics_dir .. "summer/water/water_??.png"),
    dither_layer = 180,
    fps = 14,
    temperature = 100,
@@ -515,6 +604,44 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
+   name = "wasteland_forested_mountain1",
+   descname = _ "Forested Mountain 1",
+   editor_category = "wasteland",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "wasteland/forested_mountain1_00.png" },
+   dither_layer = 81,
+   temperature = 110,
+   humidity = 0.15,
+   fertility = 0.95,
+}
+
+world:new_terrain_type{
+   name = "wasteland_forested_mountain2",
+   descname = _ "Forested Mountain 2",
+   editor_category = "wasteland",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "wasteland/forested_mountain2_00.png" },
+   dither_layer = 81,
+   temperature = 95,
+   humidity = 0.2,
+   fertility = 0.4,
+}
+
+world:new_terrain_type{
    name = "wasteland_mountain1",
    descname = _ "Mountain 1",
    editor_category = "wasteland",
@@ -577,43 +704,6 @@ world:new_terrain_type{
    fertility = 0.2,
 }
 
-world:new_terrain_type{
-   name = "wasteland_forested_mountain1",
-   descname = _ "Forested Mountain 1",
-   editor_category = "wasteland",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "wasteland/forested_mountain1_00.png" },
-   dither_layer = 81,
-   temperature = 110,
-   humidity = 0.15,
-   fertility = 0.95,
-}
-
-world:new_terrain_type{
-   name = "wasteland_forested_mountain2",
-   descname = _ "Forested Mountain 2",
-   editor_category = "wasteland",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "wasteland/forested_mountain2_00.png" },
-   dither_layer = 81,
-   temperature = 95,
-   humidity = 0.2,
-   fertility = 0.4,
-}
 
 world:new_terrain_type{
    name = "wasteland_beach",
@@ -623,7 +713,7 @@ world:new_terrain_type{
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "wasteland/strand_00.png" },
+   textures = { pics_dir .. "wasteland/beach_00.png" },
    dither_layer = 50,
    temperature = 60,
    humidity = 0.4,
@@ -639,7 +729,7 @@ world:new_terrain_type{
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = path.list_files(pics_dir .. "wasteland/lava-stone1_??.png"),
+   textures = path.list_files(pics_dir .. "wasteland/lava_stone1/lava-stone1_??.png"),
    dither_layer = 20,
    fps = 7,
    temperature = 1273.0,
@@ -656,7 +746,7 @@ world:new_terrain_type{
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = path.list_files(pics_dir .. "wasteland/lava-stone2_??.png"),
+   textures = path.list_files(pics_dir .. "wasteland/lava_stone2/lava-stone2_??.png"),
    dither_layer = 10,
    fps = 7,
    temperature = 1273.0,
@@ -673,7 +763,7 @@ world:new_terrain_type{
    valid_resources = { "fish" },
    default_resource = "fish",
    default_resource_amount = 4,
-   textures = path.list_files(pics_dir .. "wasteland/water_??.png"),
+   textures = path.list_files(pics_dir .. "wasteland/water/water_??.png"),
    dither_layer = 170,
    fps = 14,
    temperature = 100,
@@ -796,6 +886,44 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
+   name = "winter_forested_mountain1",
+   descname = _ "Forested Mountain 1",
+   editor_category = "winter",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "winter/forested_mountain1_00.png" },
+   dither_layer = 101,
+   temperature = 35,
+   humidity = 0.7,
+   fertility = 0.4,
+}
+
+world:new_terrain_type{
+   name = "winter_forested_mountain2",
+   descname = _ "Forested Mountain 2",
+   editor_category = "winter",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "winter/forested_mountain2_00.png" },
+   dither_layer = 101,
+   temperature = 35,
+   humidity = 0.7,
+   fertility = 0.4,
+}
+
+world:new_terrain_type{
    name = "winter_mountain1",
    descname = _ "Mountain 1",
    editor_category = "winter",
@@ -857,45 +985,6 @@ world:new_terrain_type{
    humidity = 0.3,
    fertility = 0.05,
 }
-
-world:new_terrain_type{
-   name = "winter_forested_mountain1",
-   descname = _ "Forested Mountain 1",
-   editor_category = "winter",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "winter/forested_mountain1_00.png" },
-   dither_layer = 101,
-   temperature = 35,
-   humidity = 0.7,
-   fertility = 0.4,
-}
-
-world:new_terrain_type{
-   name = "winter_forested_mountain2",
-   descname = _ "Forested Mountain 2",
-   editor_category = "winter",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "winter/forested_mountain2_00.png" },
-   dither_layer = 101,
-   temperature = 35,
-   humidity = 0.7,
-   fertility = 0.4,
-}
-
 world:new_terrain_type{
    name = "ice",
    descname = _ "Ice",
@@ -920,7 +1009,7 @@ world:new_terrain_type{
    valid_resources = {},
    default_resource = "",
    default_resource_amount = 0,
-   textures = { pics_dir .. "winter/strand_00.png" },
+   textures = { pics_dir .. "winter/beach_00.png" },
    dither_layer = 40,
    temperature = 60,
    humidity = 0.5,
@@ -936,7 +1025,7 @@ world:new_terrain_type{
    valid_resources = {"fish"},
    default_resource = "",
    default_resource_amount = 0,
-   textures = path.list_files(pics_dir .. "winter/ice_flows_??.png"),
+   textures = path.list_files(pics_dir .. "winter/ice_floes1/ice_floes_??.png"),
    dither_layer = 210,
    fps = 5,
    temperature = 50,
@@ -953,7 +1042,7 @@ world:new_terrain_type{
    valid_resources = {"fish"},
    default_resource = "",
    default_resource_amount = 0,
-   textures = path.list_files(pics_dir .. "winter/ice_flows2_??.png"),
+   textures = path.list_files(pics_dir .. "winter/ice_floes2/ice_floes2_??.png"),
    dither_layer = 210,
    fps = 5,
    temperature = 50,
@@ -970,7 +1059,7 @@ world:new_terrain_type{
    valid_resources = {"fish"},
    default_resource = "fish",
    default_resource_amount = 4,
-   textures = path.list_files(pics_dir .. "winter/water_??.png"),
+   textures = path.list_files(pics_dir .. "winter/water/water_??.png"),
    dither_layer = 190,
    fps = 8,
    temperature = 50,
@@ -982,6 +1071,21 @@ world:new_terrain_type{
 ---------------------
 --  Former Desert  --
 ---------------------
+
+world:new_terrain_type{
+   name = "desert4",
+   descname = _ "Desert 4",
+   editor_category = "desert",
+   is = "arable",
+   valid_resources = {"water"},
+   default_resource = "water",
+   default_resource_amount = 2,
+   textures = { pics_dir .. "desert/desert4_00.png" },
+   dither_layer = 270,
+   temperature = 168,
+   humidity = 0.001,
+   fertility = 0.1,
+}
 
 world:new_terrain_type{
    name = "drysoil",
@@ -1078,6 +1182,45 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
+   name = "desert_forested_mountain1",
+   descname = _ "Forested Mountain 1",
+   editor_category = "desert",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "desert/forested_mountain1_00.png" },
+   dither_layer = 71,
+   temperature = 141,
+   humidity = 0.5,
+   fertility = 0.5,
+}
+
+world:new_terrain_type{
+   name = "desert_forested_mountain2",
+   descname = _ "Forested Mountain 2",
+   editor_category = "desert",
+   is = "mineable",
+   tooltips = {
+      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
+      _"likes trees",
+   },
+   valid_resources = {"coal", "iron", "gold", "stones"},
+   default_resource = "",
+   default_resource_amount = 0,
+   textures = { pics_dir .. "desert/forested_mountain2_00.png" },
+   dither_layer = 141,
+   temperature = 120,
+   humidity = 0.5,
+   fertility = 0.5,
+}
+
+
+world:new_terrain_type{
    name = "mountain1",
    descname = _ "Mountain 1",
    editor_category = "desert",
@@ -1139,45 +1282,6 @@ world:new_terrain_type{
    humidity = 0.05,
    fertility = 0.05,
 }
-
-world:new_terrain_type{
-   name = "desert_forested_mountain1",
-   descname = _ "Forested Mountain 1",
-   editor_category = "desert",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "desert/forested_mountain1_00.png" },
-   dither_layer = 71,
-   temperature = 141,
-   humidity = 0.5,
-   fertility = 0.5,
-}
-
-world:new_terrain_type{
-   name = "desert_forested_mountain2",
-   descname = _ "Forested Mountain 2",
-   editor_category = "desert",
-   is = "mineable",
-   tooltips = {
-      -- TRANSLATORS: This is an entry in a terrain tooltip. Try to use 1 word if possible.
-      _"likes trees",
-   },
-   valid_resources = {"coal", "iron", "gold", "stones"},
-   default_resource = "",
-   default_resource_amount = 0,
-   textures = { pics_dir .. "desert/forested_mountain2_00.png" },
-   dither_layer = 141,
-   temperature = 120,
-   humidity = 0.5,
-   fertility = 0.5,
-}
-
 world:new_terrain_type{
    name = "desert1",
    descname = _ "Desert 1",
@@ -1227,22 +1331,6 @@ world:new_terrain_type{
 
 
 world:new_terrain_type{
-   name = "desert4",
-   descname = _ "Desert 4",
-   editor_category = "desert",
-   is = "arable",
-   valid_resources = {"water"},
-   default_resource = "water",
-   default_resource_amount = 2,
-   textures = { pics_dir .. "desert/desert4_00.png" },
-   dither_layer = 270,
-   temperature = 168,
-   humidity = 0.001,
-   fertility = 0.1,
-}
-
-
-world:new_terrain_type{
    name = "desert_beach",
    descname = _ "Beach",
    editor_category = "desert",
@@ -1266,7 +1354,7 @@ world:new_terrain_type{
    valid_resources = {"fish"},
    default_resource = "fish",
    default_resource_amount = 4,
-   textures = path.list_files(pics_dir .. "desert/wasser_??.png"),
+   textures = path.list_files(pics_dir .. "desert/water/water_??.png"),
    dither_layer = 200,
    fps = 5,
    temperature = 150,

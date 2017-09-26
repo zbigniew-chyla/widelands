@@ -28,8 +28,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      prohibited_till = 600,
-      forced_after = 800,
+      prohibited_till = 550,
       space_consumer = true
    },
 

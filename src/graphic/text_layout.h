@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2012 by the Widelands Development Team
+ * Copyright (C) 2006-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,15 +21,13 @@
 #define WL_GRAPHIC_TEXT_LAYOUT_H
 
 #include <string>
-#include <unicode/uchar.h>
 
 #include "graphic/align.h"
-#include "graphic/font.h"
-#include "graphic/font_handler1.h"
 #include "graphic/color.h"
+#include "graphic/font_handler1.h"
 #include "graphic/image.h"
-#include "graphic/text_constants.h"
 #include "graphic/text/font_set.h"
+#include "graphic/text_constants.h"
 
 /**
  * This function replaces some HTML entities in strings, e.g. %nbsp;.
@@ -41,14 +39,13 @@ void replace_entities(std::string* text);
   * Returns the exact width of the text rendered as editorfont for the given font size.
   * This function is inefficient; only call when we need the exact width.
   */
-
-uint32_t text_width(const std::string& text, int ptsize);
+int text_width(const std::string& text, int ptsize = UI_FONT_SIZE_SMALL);
 
 /**
-  * Returns the exact height of the text rendered as editorfont for the given font size.
+  * Returns the exact height of the text rendered for the given font size and face.
   * This function is inefficient; only call when we need the exact height.
   */
-uint32_t text_height(const std::string& text, int ptsize);
+int text_height(int ptsize = UI_FONT_SIZE_SMALL, UI::FontSet::Face face = UI::FontSet::Face::kSans);
 
 /**
  * Checks it the given string is RichText or not. Does not do validity checking.
@@ -66,27 +63,31 @@ std::string richtext_escape(const std::string& given_text);
  * Convenience functions to convert simple text into a valid block
  * of rich text which can be rendered.
  */
-std::string as_uifont
-	(const std::string&, int ptsize = UI_FONT_SIZE_SMALL, const RGBColor& clr = UI_FONT_CLR_FG,
-	 UI::FontSet::Face face = UI::FontSet::Face::kSans);
+std::string as_uifont(const std::string&,
+                      int ptsize = UI_FONT_SIZE_SMALL,
+                      const RGBColor& clr = UI_FONT_CLR_FG,
+                      UI::FontSet::Face face = UI::FontSet::Face::kSans);
 
 // Same as as_aligned, but with the condensed font preselected.
-std::string as_condensed
-	(const std::string& text,
-	 UI::Align align = UI::Align::kLeft,
-	 int ptsize = UI_FONT_SIZE_SMALL,
-	 const RGBColor& clr = UI_FONT_CLR_FG);
+std::string as_condensed(const std::string& text,
+                         UI::Align align = UI::Align::kLeft,
+                         int ptsize = UI_FONT_SIZE_SMALL,
+                         const RGBColor& clr = UI_FONT_CLR_FG);
 
-std::string as_editorfont(const std::string& text, int ptsize = UI_FONT_SIZE_SMALL,
-								  const RGBColor& clr = UI_FONT_CLR_FG);
+std::string as_editorfont(const std::string& text,
+                          int ptsize = UI_FONT_SIZE_SMALL,
+                          const RGBColor& clr = UI_FONT_CLR_FG);
 
-std::string as_aligned(const std::string & txt, UI::Align align, int ptsize = UI_FONT_SIZE_SMALL,
-							  const RGBColor& clr = UI_FONT_CLR_FG,
-							  UI::FontSet::Face face = UI::FontSet::Face::kSans);
+std::string as_aligned(const std::string& txt,
+                       UI::Align align,
+                       int ptsize = UI_FONT_SIZE_SMALL,
+                       const RGBColor& clr = UI_FONT_CLR_FG,
+                       UI::FontSet::Face face = UI::FontSet::Face::kSans);
 
 std::string as_tooltip(const std::string&);
 std::string as_waresinfo(const std::string&);
 std::string as_game_tip(const std::string&);
+std::string as_message(const std::string& heading, const std::string& body);
 
 /**
   * Render 'text' as ui_font. If 'width' > 0 and the rendered image is too
@@ -94,51 +95,18 @@ std::string as_game_tip(const std::string&);
   * smaller until it fits 'width'. The resulting font size will not go below
   * 'kMinimumFontSize'.
   */
-const Image* autofit_ui_text(const std::string& text,
-									  int width = 0,
-									  RGBColor color = UI_FONT_CLR_FG,
-									  int fontsize = UI_FONT_SIZE_SMALL);
+std::shared_ptr<const UI::RenderedText> autofit_ui_text(const std::string& text,
+                                                        int width = 0,
+                                                        RGBColor color = UI_FONT_CLR_FG,
+                                                        int fontsize = UI_FONT_SIZE_SMALL);
 
 namespace UI {
 
-/**
- * Text style combines font with other characteristics like color
- * and style (italics, bold).
- */
-// TODO(GunChleoc): This struct will disappear with the old font handler
-struct TextStyle {
-	TextStyle();
+Align mirror_alignment(Align alignment, const std::string& checkme = "");
 
-	static TextStyle makebold(Font * font, RGBColor fg) {
-		TextStyle ts;
-		ts.font = font;
-		ts.bold = true;
-		ts.fg = fg;
-		return ts;
-	}
+void center_vertically(uint32_t h, Vector2i* pt);
+void correct_for_align(Align, uint32_t w, Vector2i* pt);
 
-	uint32_t calc_bare_width(const std::string & text) const;
-	uint32_t calc_width_for_wrapping(const UChar& c) const;
-	uint32_t calc_width_for_wrapping(const std::string & text) const;
-	void calc_bare_height_heuristic(const std::string & text, int32_t & miny, int32_t & maxy) const;
-	void setup() const;
-
-	Font * font;
-	RGBColor fg;
-	bool bold : 1;
-	bool italics : 1;
-	bool underline : 1;
-
-	bool operator== (const TextStyle & o) const {
-		return
-			font == o.font && fg == o.fg &&
-			bold == o.bold && italics == o.italics && underline == o.underline;
-	}
-	bool operator!= (const TextStyle & o) const {
-		return !(*this == o);
-	}
-};
-
-} // namespace UI
+}  // namespace UI
 
 #endif  // end of include guard: WL_GRAPHIC_TEXT_LAYOUT_H

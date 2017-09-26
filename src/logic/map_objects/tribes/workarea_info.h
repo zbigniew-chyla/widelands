@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2016 by the Widelands Development Team
+ * Copyright (C) 2005-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -39,11 +39,8 @@
  * See LuaBuildingDescription::get_workarea_radius, InteractiveBase::show_work_area
  */
 
-// TODO(Hasi50): LuaBuildingDescription::get_workarea_radius will only give us the very first
-// size found, which seems to be correct but depends on the std:map implementation
-//
-// We could just use a unit8 as base for the map?
-// We should document (as const) the expected stings.
+// TODO(Hasi50): We could just use a unit8 as base for the map? We should
+// document (as const) the expected stings.
 
 using WorkareaInfo = std::map<uint32_t, std::set<std::string>>;
 

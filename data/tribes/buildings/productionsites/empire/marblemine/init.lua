@@ -38,7 +38,8 @@ tribes:new_productionsite_type {
    aihints = {
       mines = "stones",
       mines_percent = 50,
-      prohibited_till = 450
+      prohibited_till = 600,
+      basic_amount = 1
    },
 
    working_positions = {
@@ -46,8 +47,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      ration = 6,
-      wine = 6
+      { name = "ration", amount = 6 },
+      { name = "wine", amount = 6 }
    },
    outputs = {
       "marble",

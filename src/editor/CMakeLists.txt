@@ -9,8 +9,8 @@ wl_library(editor
     tools/decrease_height_tool.h
     tools/decrease_resources_tool.cc
     tools/decrease_resources_tool.h
-    tools/delete_bob_tool.cc
-    tools/delete_bob_tool.h
+    tools/delete_critter_tool.cc
+    tools/delete_critter_tool.h
     tools/delete_immovable_tool.cc
     tools/delete_immovable_tool.h
     tools/draw_tool.cc
@@ -23,13 +23,11 @@ wl_library(editor
     tools/increase_resources_tool.h
     tools/info_tool.cc
     tools/info_tool.h
-    tools/make_infrastructure_tool.cc
-    tools/make_infrastructure_tool.h
     tools/multi_select.h
     tools/noise_height_tool.cc
     tools/noise_height_tool.h
-    tools/place_bob_tool.cc
-    tools/place_bob_tool.h
+    tools/place_critter_tool.cc
+    tools/place_critter_tool.h
     tools/place_immovable_tool.cc
     tools/place_immovable_tool.h
     tools/set_height_tool.cc
@@ -77,8 +75,8 @@ wl_library(editor
     ui_menus/tool_noise_height_options_menu.h
     ui_menus/tool_options_menu.cc
     ui_menus/tool_options_menu.h
-    ui_menus/tool_place_bob_options_menu.cc
-    ui_menus/tool_place_bob_options_menu.h
+    ui_menus/tool_place_critter_options_menu.cc
+    ui_menus/tool_place_critter_options_menu.h
     ui_menus/tool_place_immovable_options_menu.cc
     ui_menus/tool_place_immovable_options_menu.h
     ui_menus/tool_set_terrain_options_menu.cc
@@ -89,12 +87,16 @@ wl_library(editor
   DEPENDS
     base_exceptions
     base_i18n
+    base_log
     base_macros
     base_scoped_timer
     graphic
+    graphic_fonthandler
+    graphic_playercolor
     graphic_surface
     io_filesystem
     logic
+    logic_constants
     logic_widelands_geometry
     map_io
     map_io_map_loader
@@ -104,9 +106,7 @@ wl_library(editor
     scripting_lua_interface
     scripting_lua_table
     ui_basic
-    widelands_ball_of_mud
     wui
     wui_common
-    wui_field_overlay_manager
     wui_mapview_pixelfunctions
 )

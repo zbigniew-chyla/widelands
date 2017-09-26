@@ -38,8 +38,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 250,
-      prohibited_till = 250,
+      basic_amount = 1,
       very_weak_ai_limit = 1,
       weak_ai_limit = 2
    },
@@ -49,7 +48,7 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      log = 8
+      { name = "log", amount = 8 }
    },
    outputs = {
       "blackwood"
@@ -63,6 +62,7 @@ tribes:new_productionsite_type {
             "sleep=43000",
             "return=skipped unless economy needs blackwood",
             "consume=log:2",
+            "play_sound=sound/barbarians blackwood 80",
             "animate=working 24000",
             "produce=blackwood"
          }

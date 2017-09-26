@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002, 2006-2008 by the Widelands Development Team
+ * Copyright (C) 2002-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,16 +34,17 @@ struct TribeBasicInfo {
 
 	/// Script path and localized name for a starting condition
 	struct Initialization {
-		Initialization(std::string init_script, std::string init_descname, std::string init_tooltip) :
-			script(init_script),
-			descname(init_descname),
-			tooltip(init_tooltip) {}
+		Initialization(const std::string& init_script,
+		               const std::string& init_descname,
+		               const std::string& init_tooltip)
+		   : script(init_script), descname(init_descname), tooltip(init_tooltip) {
+		}
 		std::string script;
 		std::string descname;
 		std::string tooltip;
 	};
 
-	TribeBasicInfo(std::unique_ptr<LuaTable> table);
+	explicit TribeBasicInfo(std::unique_ptr<LuaTable> table);
 
 	/// Internal name to reference this tribe
 	std::string name;

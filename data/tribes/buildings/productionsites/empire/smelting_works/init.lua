@@ -36,7 +36,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      prohibited_till = 600,
+      prohibited_till = 700,
       very_weak_ai_limit = 1,
       weak_ai_limit = 2
    },
@@ -46,9 +46,9 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      iron_ore = 8,
-      gold_ore = 8,
-      coal = 8
+      { name = "coal", amount = 8 },
+      { name = "iron_ore", amount = 8 },
+      { name = "gold_ore", amount = 8 }
    },
    outputs = {
       "iron",
@@ -71,9 +71,12 @@ tribes:new_productionsite_type {
          descname = _"smelting iron",
          actions = {
             "return=skipped unless economy needs iron",
-            "sleep=25000",
+            "sleep=5000",  -- penalty for unavailable iron_ore (2x)
             "consume=iron_ore coal",
+            "sleep=20000",
+            "play_sound=sound/metal fizzle 150",
             "animate=working 35000",
+            "play_sound=sound/metal ironping 80",
             "produce=iron"
          }
       },
@@ -82,9 +85,12 @@ tribes:new_productionsite_type {
          descname = _"smelting gold",
          actions = {
             "return=skipped unless economy needs gold",
-            "sleep=25000",
+            "sleep=10000",  -- penalty for unavailable gold_ore
             "consume=gold_ore coal",
+            "sleep=15000",
+            "play_sound=sound/metal fizzle 150",
             "animate=working 35000",
+            "play_sound=sound/metal goldping 80",
             "produce=gold"
          }
       },

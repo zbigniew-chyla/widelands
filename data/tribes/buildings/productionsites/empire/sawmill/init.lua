@@ -31,8 +31,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 250,
-      prohibited_till = 250,
+      basic_amount = 2,
       very_weak_ai_limit = 1,
       weak_ai_limit = 2
    },
@@ -42,7 +41,7 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      log = 8
+      { name = "log", amount = 8 }
    },
    outputs = {
       "planks"

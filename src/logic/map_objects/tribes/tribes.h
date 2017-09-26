@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2014 by the Widelands Development Team
+ * Copyright (C) 2006-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,20 +24,21 @@
 
 #include "base/macros.h"
 #include "graphic/texture.h"
+#include "logic/description_maintainer.h"
+#include "logic/map_objects/immovable.h"
 #include "logic/map_objects/tribes/carrier.h"
 #include "logic/map_objects/tribes/constructionsite.h"
-#include "logic/description_maintainer.h"
 #include "logic/map_objects/tribes/dismantlesite.h"
-#include "logic/map_objects/immovable.h"
 #include "logic/map_objects/tribes/militarysite.h"
 #include "logic/map_objects/tribes/productionsite.h"
 #include "logic/map_objects/tribes/ship.h"
 #include "logic/map_objects/tribes/soldier.h"
 #include "logic/map_objects/tribes/trainingsite.h"
-#include "logic/map_objects/tribes/tribe_descr.h"
 #include "logic/map_objects/tribes/tribe_basic_info.h"
-#include "logic/map_objects/tribes/warehouse.h"
+#include "logic/map_objects/tribes/tribe_descr.h"
 #include "logic/map_objects/tribes/ware_descr.h"
+#include "logic/map_objects/tribes/warehouse.h"
+#include "logic/map_objects/tribes/market.h"
 #include "logic/map_objects/tribes/worker_descr.h"
 #include "scripting/lua_table.h"
 
@@ -46,22 +47,23 @@ namespace Widelands {
 class WareDescr;
 class WorkerDescr;
 
+/// Returns a string vector with the names of all tribes.
+std::vector<std::string> get_all_tribenames();
+
+/// Returns a vector with the basic info for all tribes.
+std::vector<TribeBasicInfo> get_all_tribeinfos();
+
+/// Returns the basic preload info for a tribe.
+TribeBasicInfo get_tribeinfo(const std::string& tribename);
+
+/// Returns whether this tribe is listed in tribes/preload.lua.
+bool tribe_exists(const std::string& tribename);
+
 class Tribes {
 public:
 	Tribes();
-	~Tribes() {}
-
-	/// Returns a string vector with the names of all tribes.
-	static std::vector<std::string> get_all_tribenames();
-
-	/// Returns a vector with the basic info for all tribes.
-	static std::vector<TribeBasicInfo> get_all_tribeinfos();
-
-	/// Returns the basic preload info for a tribe.
-	static TribeBasicInfo tribeinfo(const std::string& tribename);
-
-	/// Returns whether this tribe is listed in tribes/preload.lua.
-	static bool tribe_exists(const std::string & tribename);
+	~Tribes() {
+	}
 
 	/// Adds this building type to the tribe description.
 	void add_constructionsite_type(const LuaTable& table, const EditorGameBase& egbase);
@@ -80,6 +82,9 @@ public:
 
 	/// Adds this building type to the tribe description.
 	void add_warehouse_type(const LuaTable& table, const EditorGameBase& egbase);
+
+	/// Adds this building type to the tribe description.
+	void add_market_type(const LuaTable& table, const EditorGameBase& egbase);
 
 	/// Adds this immovable type to the tribe description.
 	void add_immovable_type(const LuaTable& table);
@@ -130,6 +135,7 @@ public:
 	DescriptionIndex worker_index(const std::string& workername) const;
 
 	const BuildingDescr* get_building_descr(DescriptionIndex building_index) const;
+	BuildingDescr* get_mutable_building_descr(DescriptionIndex building_index) const;
 	const ImmovableDescr* get_immovable_descr(DescriptionIndex immovable_index) const;
 	const ShipDescr* get_ship_descr(DescriptionIndex ship_index) const;
 	const WareDescr* get_ware_descr(DescriptionIndex ware_index) const;
@@ -137,7 +143,7 @@ public:
 	const TribeDescr* get_tribe_descr(DescriptionIndex tribe_index) const;
 
 	void set_ware_type_has_demand_check(const DescriptionIndex& ware_index,
-													const std::string& tribename) const;
+	                                    const std::string& tribename) const;
 	void set_worker_type_has_demand_check(const DescriptionIndex& worker_index) const;
 
 	/// Load tribes' graphics

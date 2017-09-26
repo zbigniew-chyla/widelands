@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 by the Widelands Development Team
+ * Copyright (C) 2011-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +38,6 @@
 #include "logic/widelands_geometry_io.h"
 #include "map_io/map_object_loader.h"
 #include "map_io/map_object_saver.h"
-#include "wui/interactive_gamebase.h"
 
 namespace Widelands {
 
@@ -49,7 +48,7 @@ const PortdockDescr& PortDock::descr() const {
 }
 
 PortdockDescr::PortdockDescr(char const* const init_name, char const* const init_descname)
-	: MapObjectDescr(MapObjectType::PORTDOCK, init_name, init_descname) {
+   : MapObjectDescr(MapObjectType::PORTDOCK, init_name, init_descname) {
 }
 
 PortDock::PortDock(Warehouse* wh)
@@ -141,11 +140,11 @@ void PortDock::set_economy(Economy* e) {
 		expedition_bootstrap_->set_economy(e);
 }
 
-void PortDock::draw(const EditorGameBase&, RenderTarget&, const FCoords&, const Point&) {
+void PortDock::draw(uint32_t, const TextToDraw, const Vector2f&, float, RenderTarget*) {
 	// do nothing
 }
 
-void PortDock::init(EditorGameBase& egbase) {
+bool PortDock::init(EditorGameBase& egbase) {
 	PlayerImmovable::init(egbase);
 
 	for (const Coords& coords : dockpoints_) {
@@ -153,6 +152,7 @@ void PortDock::init(EditorGameBase& egbase) {
 	}
 
 	init_fleet(egbase);
+	return true;
 }
 
 /**
@@ -217,13 +217,12 @@ void PortDock::cleanup(EditorGameBase& egbase) {
 	if (wh) {
 		if (!wh->cleanup_in_progress_) {
 			if (upcast(Game, game, &egbase)) {
-				if (game->is_loaded()) { // Do not attempt when shutting down
+				if (game->is_loaded()) {  // Do not attempt when shutting down
 					wh->restore_portdock_or_destroy(egbase);
 				}
 			}
 		}
 	}
-
 }
 
 /**
@@ -249,8 +248,7 @@ void PortDock::add_shippingitem(Game& game, WareInstance& ware) {
  */
 void PortDock::update_shippingitem(Game& game, WareInstance& ware) {
 	for (std::vector<ShippingItem>::iterator item_iter = waiting_.begin();
-	     item_iter != waiting_.end();
-	     ++item_iter) {
+	     item_iter != waiting_.end(); ++item_iter) {
 
 		if (item_iter->object_.serial() == ware.serial()) {
 			update_shippingitem(game, item_iter);
@@ -274,8 +272,7 @@ void PortDock::add_shippingitem(Game& game, Worker& worker) {
  */
 void PortDock::update_shippingitem(Game& game, Worker& worker) {
 	for (std::vector<ShippingItem>::iterator item_iter = waiting_.begin();
-	     item_iter != waiting_.end();
-	     ++item_iter) {
+	     item_iter != waiting_.end(); ++item_iter) {
 
 		if (item_iter->object_.serial() == worker.serial()) {
 			update_shippingitem(game, item_iter);
@@ -340,8 +337,6 @@ void PortDock::ship_arrived(Game& game, Ship& ship) {
 			// The expedition goods are now on the ship, so from now on it is independent from the port
 			// and thus we switch the port to normal, so we could even start a new expedition,
 			cancel_expedition(game);
-			if (upcast(InteractiveGameBase, igb, game.get_ibase()))
-				ship.refresh_window(*igb);
 			return fleet_->update(game);
 		}
 	}
@@ -450,23 +445,17 @@ void PortDock::log_general_info(const EditorGameBase& egbase) {
 
 	if (warehouse_) {
 		Coords pos(warehouse_->get_position());
-		molog("PortDock for warehouse %u (at %i,%i) in fleet %u, need_ship: %s, waiting: %" PRIuS "\n",
-		     warehouse_->serial(),
-		      pos.x,
-		      pos.y,
-		      fleet_ ? fleet_->serial() : 0,
-		      need_ship_ ? "true" : "false",
-		      waiting_.size());
+		molog("PortDock for warehouse %u (at %i,%i) in fleet %u, need_ship: %s, waiting: %" PRIuS
+		      "\n",
+		      warehouse_->serial(), pos.x, pos.y, fleet_ ? fleet_->serial() : 0,
+		      need_ship_ ? "true" : "false", waiting_.size());
 	} else {
 		molog("PortDock without a warehouse in fleet %u, need_ship: %s, waiting: %" PRIuS "\n",
-			 fleet_ ? fleet_->serial() : 0,
-		      need_ship_ ? "true" : "false",
-		      waiting_.size());
+		      fleet_ ? fleet_->serial() : 0, need_ship_ ? "true" : "false", waiting_.size());
 	}
 
 	for (ShippingItem& shipping_item : waiting_) {
-		molog("  IT %u, destination %u\n",
-		      shipping_item.object_.serial(),
+		molog("  IT %u, destination %u\n", shipping_item.object_.serial(),
 		      shipping_item.destination_dock_.serial());
 	}
 }
@@ -476,7 +465,7 @@ constexpr uint8_t kCurrentPacketVersion = 3;
 PortDock::Loader::Loader() : warehouse_(0) {
 }
 
-void PortDock::Loader::load(FileRead & fr) {
+void PortDock::Loader::load(FileRead& fr) {
 	PlayerImmovable::Loader::load(fr);
 
 	PortDock& pd = get<PortDock>();

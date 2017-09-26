@@ -10,7 +10,7 @@ return {
    -- TRANSLATORS: This is the name of a starting condition
    descname = _ "Fortified Village",
    -- TRANSLATORS: This is the tooltip for the "Fortified Village" starting condition
-   tooltip = _" Start the game with a fortified military installation",
+   tooltip = _"Start the game with a fortified military installation",
    func =  function(plr, shared_in_start)
 
       local sf = wl.Game().map.player_slots[plr.number].starting_field
@@ -19,6 +19,7 @@ return {
          sf = shared_in_start
       else
          plr:allow_workers("all")
+         plr:forbid_buildings{"barbarians_market"}
       end
 
       local h = plr:place_building("barbarians_citadel", sf, false, true)
@@ -68,7 +69,7 @@ return {
       })
 
       place_building_in_region(plr, "barbarians_battlearena", sf:region(12), {
-         wares = {
+         inputs = {
             barbarians_bread = 8,
             fish = 6,
             meat = 6,
@@ -78,19 +79,19 @@ return {
       place_building_in_region(plr, "barbarians_trainingcamp", sf:region(12))
 
       place_building_in_region(plr, "barbarians_helmsmithy", sf:region(12), {
-         wares = { iron = 4, gold = 4 }
+         inputs = { iron = 4, gold = 4 }
       })
       place_building_in_region(plr, "barbarians_metal_workshop", sf:region(12), {
-         wares = { iron = 8 },
+         inputs = { iron = 8 },
       })
       place_building_in_region(plr, "barbarians_ax_workshop", sf:region(12), {
-         wares = { coal = 8 },
+         inputs = { coal = 8 },
       })
       place_building_in_region(plr, "barbarians_wood_hardener", sf:region(12), {
-         wares = { log = 1 },
+         inputs = { log = 1 },
       })
       place_building_in_region(plr, "barbarians_lime_kiln", sf:region(12), {
-         wares = { granite = 6, coal = 3 },
+         inputs = { granite = 6, coal = 3 },
       })
    end
 }

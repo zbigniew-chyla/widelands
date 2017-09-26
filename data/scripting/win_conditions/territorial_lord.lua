@@ -93,7 +93,7 @@ return {
          end
       end
 
-      function _calc_points()
+      local function _calc_points()
          local teampoints = {}     -- points of teams
          local maxplayerpoints = 0 -- the highest points of a player without team
          local maxpointsplayer = 0 -- the player
@@ -148,40 +148,40 @@ return {
          end
       end
 
-      function _send_state()
+      local function _send_state()
          set_textdomain("win_conditions")
          local candidate = currentcandidate
          if candidateisteam then
             candidate = (_"Team %i"):format(currentcandidate)
          end
-         local msg1 = (_"%s owns more than half of the map’s area."):format(candidate)
-         msg1 = msg1 .. "\n"
-         msg1 = msg1 .. (ngettext("You’ve still got %i minute to prevent a victory.",
+         local msg1 = p(_"%s owns more than half of the map’s area."):format(candidate)
+         msg1 = msg1 .. p(ngettext("You’ve still got %i minute to prevent a victory.",
                    "You’ve still got %i minutes to prevent a victory.",
                    remaining_time / 60))
                :format(remaining_time / 60)
 
-         local msg2 = _"You own more than half of the map’s area."
-         msg2 = msg2 .. "\n"
-         msg2 = msg2 .. (ngettext("Keep it for %i more minute to win the game.",
+         local msg2 = p(_"You own more than half of the map’s area.")
+         msg2 = msg2 .. p(ngettext("Keep it for %i more minute to win the game.",
                    "Keep it for %i more minutes to win the game.",
                    remaining_time / 60))
                :format(remaining_time / 60)
 
-         for idx, p in ipairs(plrs) do
-            if candidateisteam and currentcandidate == p.team
-               or not candidateisteam and currentcandidate == p.name then
-               send_message(p, game_status.title, msg2, {popup = true})
+         for idx, player in ipairs(plrs) do
+            if candidateisteam and currentcandidate == player.team
+               or not candidateisteam and currentcandidate == player.name then
+               send_message(player, game_status.title, msg2, {popup = true})
             else
-               send_message(p, game_status.title, msg1, {popup = true})
+               send_message(player, game_status.title, msg1, {popup = true})
             end
          end
       end
 
       -- Start a new coroutine that checks for defeated players
       run(function()
-         sleep(5000)
-         check_player_defeated(plrs, lost_game.title, lost_game.body, wc_descname, wc_version)
+         while remaining_time ~= 0 do
+            sleep(5000)
+            check_player_defeated(plrs, lost_game.title, lost_game.body, wc_descname, wc_version)
+         end
       end)
 
       -- here is the main loop!!!

@@ -47,10 +47,8 @@ tribes:new_trainingsite_type {
 
    aihints = {
       prohibited_till = 900,
-      forced_after = 1500,
-      trainingsite_type = "basic",
       very_weak_ai_limit = 1,
-      weak_ai_limit = 3
+      weak_ai_limit = 2
    },
 
    working_positions = {
@@ -58,10 +56,10 @@ tribes:new_trainingsite_type {
    },
 
    inputs = {
-      barbarians_bread = 10,
-      fish = 6,
-      meat = 6,
-      beer_strong = 6
+      { name = "fish", amount = 6 },
+      { name = "meat", amount = 6 },
+      { name = "barbarians_bread", amount = 10 },
+      { name = "beer_strong", amount = 6 }
    },
    outputs = {
       "barbarians_soldier",
@@ -88,7 +86,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_evade_0 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier evade from level 0 to level 1",
+         descname = pgettext("barbarians_building", "upgrading soldier evade from level 0 to level 1"),
          actions = {
             "check_soldier=soldier evade 0", -- Fails when aren't any soldier of level 0 evade
             "sleep=15000",
@@ -100,7 +98,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_evade_1 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier evade from level 1 to level 2",
+         descname = pgettext("barbarians_building", "upgrading soldier evade from level 1 to level 2"),
          actions = {
             "check_soldier=soldier evade 1", -- Fails when aren't any soldier of level 1 evade
             "sleep=15000",

@@ -31,9 +31,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      mines_water = true,
-      forced_after = 800,
-      prohibited_till = 450
+      mines_water = true
    },
 
    working_positions = {
@@ -60,7 +58,7 @@ tribes:new_productionsite_type {
       -- Translators: Short for "Out of ..." for a resource
       title = _"No Water",
       heading = _"Out of Water",
-      message = pgettext("atlanteans_building", "The carrier working at this well can’t find any water in his work area."),
+      message = pgettext("atlanteans_building", "The carrier working at this well can’t find any water in his well."),
       productivity_threshold = 33
    },
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002-2004, 2006-2013 by the Widelands Development Team
+ * Copyright (C) 2002-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,13 +25,17 @@
 #include <SDL.h>
 
 #include "graphic/image_cache.h"
-#include "notifications/notifications.h"
 #include "notifications/note_ids.h"
+#include "notifications/notifications.h"
 
 class AnimationManager;
 class RenderTarget;
 class Screen;
 class StreamWrite;
+
+// A graphics card must at least support this size for texture for Widelands to
+// run.
+constexpr int kMinimumSizeForTextures = 2048;
 
 // Will be send whenever the resolution changes.
 struct GraphicResolutionChanged {
@@ -57,7 +61,7 @@ public:
 	// Initializes with the given resolution if fullscreen is false, otherwise a
 	// window that fills the screen. The 'trace_gl' parameter gets passed on to
 	// 'Gl::initialize'.
-	enum class TraceGl {kNo, kYes};
+	enum class TraceGl { kNo, kYes };
 	void
 	initialize(const TraceGl& trace_gl, int window_mode_w, int window_mode_height, bool fullscreen);
 
@@ -70,14 +74,22 @@ public:
 	bool fullscreen();
 	void set_fullscreen(bool);
 
-	RenderTarget * get_render_target();
+	RenderTarget* get_render_target();
 	void refresh();
-	SDL_Window* get_sdlwindow() {return sdl_window_;}
+	SDL_Window* get_sdlwindow() {
+		return sdl_window_;
+	}
 
-	int max_texture_size() const {return max_texture_size_;}
+	int max_texture_size() const {
+		return max_texture_size_;
+	}
 
-	ImageCache& images() const {return *image_cache_.get();}
-	AnimationManager& animations() const {return *animation_manager_.get();}
+	ImageCache& images() const {
+		return *image_cache_.get();
+	}
+	AnimationManager& animations() const {
+		return *animation_manager_.get();
+	}
 
 	// Requests a screenshot being taken on the next frame.
 	void screenshot(const std::string& fname);
@@ -87,8 +99,8 @@ private:
 	void resolution_changed();
 
 	// The height & width of the window should we be in window mode.
-	int window_mode_width_;
-	int window_mode_height_;
+	int window_mode_width_ = 0;
+	int window_mode_height_ = 0;
 
 	/// This is the main screen Surface.
 	/// A RenderTarget for this can be retrieved with get_render_target()
@@ -97,11 +109,11 @@ private:
 	/// This saves a copy of the screen SDL_Surface. This is needed for
 	/// opengl rendering as the SurfaceOpenGL does not use it. It allows
 	/// manipulation the screen context.
-	SDL_Window* sdl_window_;
+	SDL_Window* sdl_window_ = nullptr;
 	SDL_GLContext gl_context_;
 
 	/// The maximum width or height a texture can have.
-	int max_texture_size_;
+	int max_texture_size_ = kMinimumSizeForTextures;
 
 	/// A RenderTarget for screen_. This is initialized during init()
 	std::unique_ptr<RenderTarget> render_target_;
@@ -118,6 +130,6 @@ private:
 	std::string screenshot_filename_;
 };
 
-extern Graphic * g_gr;
+extern Graphic* g_gr;
 
 #endif  // end of include guard: WL_GRAPHIC_GRAPHIC_H

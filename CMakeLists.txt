@@ -6,6 +6,8 @@ include("${CMAKE_SOURCE_DIR}/cmake/WlFunctions.cmake")
 
 option(OPTION_USE_GLBINDING "Use glbinding instead of GLEW" OFF)
 option(OPTION_GLEW_STATIC "Use static GLEW Library" OFF)
+option(OPTION_BUILD_WEBSITE_TOOLS "Build website-related tools" ON)
+option(OPTION_BUILD_TRANSLATIONS "Build translations" ON)
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Build directory and source directory must not be the same.")
@@ -24,12 +26,12 @@ wl_set_if_unset(WL_INSTALL_BASEDIR ".")
 wl_set_if_unset(WL_INSTALL_DATADIR "./data")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7)
-    message(FATAL_ERROR "Widelands needs GCC >= 4.7 to compile.")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    message(FATAL_ERROR "Widelands needs GCC >= 4.8 to compile.")
   endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.2)
-    message(FATAL_ERROR "Clang version must be at least 3.2!")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
+    message(FATAL_ERROR "Clang version must be at least 3.4!")
   endif()
 else()
   message(WARNING "You are using an unsupported compiler! Supported are Clang and GCC.")
@@ -39,6 +41,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mod
 
 if (WIN32)
   set (Boost_USE_STATIC_LIBS  ON)
+  link_libraries(wsock32 ws2_32)
 else()
   set (Boost_USE_STATIC_LIBS  OFF)
 endif()
@@ -48,7 +51,8 @@ find_package(Boost 1.48
   COMPONENTS
     unit_test_framework
     regex
-  REQUIRED)
+  REQUIRED
+    system)
 
 find_package (PythonInterp REQUIRED)
 
@@ -58,7 +62,6 @@ find_package(PNG REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_net REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(ICU REQUIRED)
@@ -68,7 +71,9 @@ else()
   find_package(GLEW REQUIRED)
 endif()
 
-if (APPLE OR WIN32 OR CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+if (APPLE OR WIN32 OR
+    CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR
+    CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
   if (NOT CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
     find_package(intl REQUIRED)
   endif()
@@ -89,11 +94,21 @@ endif (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(WL_DEBUG_FLAGS "-g -DDEBUG")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  set(WL_OPTIMIZE_FLAGS "-O3")
+  if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.2))
+    message(STATUS "GCC >6.2.0 breaks -03, setting -02")
+    set(WL_OPTIMIZE_FLAGS "-O2")
+  else()
+    set(WL_OPTIMIZE_FLAGS "-O3")
+  endif ()
   set(WL_DEBUG_FLAGS "-DNDEBUG -DNOPARACHUTE")
 elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-  set(WL_OPTIMIZE_FLAGS "-O3")
-  set(WL_DEBUG_FLAGS "-g -DNDEBUG -DNOPARACHUTE")
+  if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.2))
+    message(STATUS "GCC >6.2.0 breaks -03, setting -02")
+    set(WL_OPTIMIZE_FLAGS "-O2")
+  else()
+    set(WL_OPTIMIZE_FLAGS "-O3")
+  endif ()
+  set(WL_DEBUG_FLAGS "-DNDEBUG -DNOPARACHUTE")
 else()
   message(FATAL_ERROR "Unknown CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 endif()
@@ -112,10 +127,15 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-padded")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-sign-conversion")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-missing-noreturn")
-  wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-implicit-fallthrough")
+
+  # It is impossible to write code that both GCC and Clang will like,
+  # so we have to switch off the warning for one of them.
+  # http://clang-developers.42468.n3.nabble.com/Question-on-Wswitch-enum-td4025927.html
+  wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-switch-enum")
 
   # TODO(sirver): weak-vtables should be enabled, but leads to lot of errors right now.
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-weak-vtables")
+
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-unreachable-code")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wno-documentation")
 
@@ -124,23 +144,20 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Qunused-arguments")
 else()
-  # Assuming GCC 4.7 or higher.
+  # Assuming GCC 4.8 or higher.
   if(WIN32)
     # This is needed for getenv().
     wl_add_flag(WL_GENERIC_CXX_FLAGS "-std=gnu++11")
+  else()
+    # SDL and MinGW both declare 'unsigned int __builtin_ia32_crc32qi(unsigned int, unsigned char)', resulting in lots of warnings. So, we can't have this flag in Windows.
+    wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wredundant-decls")
   endif()
 
-  if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8))
-     # Because of: https://svn.boost.org/trac/boost/ticket/9240.
-     wl_add_flag(WL_GENERIC_CXX_FLAGS "-fext-numeric-literals")
-  endif()
+  # Because of: https://svn.boost.org/trac/boost/ticket/9240.
+  wl_add_flag(WL_GENERIC_CXX_FLAGS "-fext-numeric-literals")
 
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wall")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
-    wl_add_flag(WL_COMPILE_DIAGNOSTICS "-pedantic")
-  else()
-    wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wpedantic")
-  endif()
+  wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wpedantic")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wdeprecated-declarations")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wextra")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wformat")
@@ -156,7 +173,6 @@ else()
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Woverlength-strings")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wpacked")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wpointer-arith")
-  wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wredundant-decls")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wsign-promo")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wsync-nand")
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wtrampolines")
@@ -165,6 +181,7 @@ else()
   wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Wunused-macros")
 endif()
 
+
 # Turn some warnings into errors.
 wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Werror=format-security")
 wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Werror=return-type")
@@ -172,7 +189,7 @@ wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Werror=shadow")
 wl_add_flag(WL_COMPILE_DIAGNOSTICS "-Werror=uninitialized")
 
 IF (WIN32)
-  add_definitions(-DMINGW_HAS_SECURE_API)
+  add_definitions(-DMINGW_HAS_SECURE_API -DWIN32_LEAN_AND_MEAN -D__STDC_FORMAT_MACROS -D__USE_MINGW_ANSI_STDIO)
   if (CMAKE_SIZEOF_VOID_P EQUAL 4)
     set (CMAKE_EXE_LINKER_FLAGS "-Wl,--large-address-aware" CACHE STRING "Set by widelands CMakeLists.txt" FORCE)
     message (STATUS "Enabled large address awareness on mingw32")
@@ -187,6 +204,12 @@ if (CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
   if (NOT CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
     find_library(EXECINFO_LIBRARY NAMES execinfo)
   endif (NOT CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
+
+  # OpenBSD needs the X11 include directory in order to find GL/glu.h
+  if (CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
+    find_package(X11 REQUIRED)
+    include_directories(${X11_INCLUDE_DIR})
+  endif ()
 endif (CMAKE_SYSTEM_NAME MATCHES "FreeBSD" OR CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
 
 if (NOT DEFINED WL_VERSION)
@@ -234,12 +257,15 @@ install (
 
 # Installation.
 add_subdirectory(doc)
-add_subdirectory(po)
+if(OPTION_BUILD_TRANSLATIONS)
+  add_subdirectory(po)
+endif(OPTION_BUILD_TRANSLATIONS)
 add_subdirectory(src)
 
 # install files to the correct locations here
 install(
   DIRECTORY
+    data/ai
     data/campaigns
     data/i18n
     data/images

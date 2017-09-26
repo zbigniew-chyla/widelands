@@ -34,7 +34,8 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 500
+      prohibited_till = 530,
+      forced_after = 720
    },
 
    working_positions = {
@@ -42,8 +43,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      water = 8,
-      wheat = 8
+      { name = "water", amount = 8 },
+      { name = "wheat", amount = 8 }
    },
    outputs = {
       "beer"

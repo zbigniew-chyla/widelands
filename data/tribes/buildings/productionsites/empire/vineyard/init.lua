@@ -29,7 +29,8 @@ tribes:new_productionsite_type {
 
    aihints = {
       space_consumer = true,
-      forced_after = 300
+      basic_amount = 1,
+      prohibited_till = 490
    },
 
    working_positions = {

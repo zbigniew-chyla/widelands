@@ -65,7 +65,7 @@ end
 --       prefilled_buildings(wl.Game().players[1],
 --          {"sentry", 57, 9}, -- Sentry completely full with soldiers
 --          {"sentry", 57, 9, soldier={[{0,0,0,0}]=1}}, -- Sentry with one soldier
---          {"bakery", 55, 20, wares = {wheat=6, water=6}}, -- bakery with wares and workers
+--          {"bakery", 55, 20, inputs = {wheat=6, water=6}}, -- bakery with wares and workers
 --          {"well", 52, 30}, -- a well with workers
 --       )
 --
@@ -77,9 +77,13 @@ end
 --
 --       wares
 --          A table of (name,count) as expected by
---          :meth:`wl.map.ProductionSite.set_wares`. This is valid for
---          :class:`wl.map.ProductionSite` and :class:`wl.map.Warehouse` and
---          ignored otherwise.
+--          :meth:`wl.map.Warehouse.set_wares`. This is valid for
+--          :class:`wl.map.Warehouse` and must not be used otherwise.
+--       inputs
+--          A table of (name,count) as expected by
+--          :meth:`wl.map.ProductionSite.set_inputs`. Inputs are wares or workers
+--          which are consumed by the building. This is valid for
+--          :class:`wl.map.ProductionSite` and must not be used otherwise.
 --       soldiers
 --          A table of (soldier_descr,count) as expected by
 --          :meth:`wl.map.HasSoldiers.set_soldiers`.  If this is nil, the site
@@ -107,6 +111,7 @@ function prefilled_buildings(p, ...)
       end
       -- Fill with wares if this is requested
       if bdescr.wares then b:set_wares(bdescr.wares) end
+      if bdescr.inputs then b:set_inputs(bdescr.inputs) end
    end
 end
 
@@ -127,24 +132,19 @@ end
 --    :arg opts:  a table with prefill information (wares, soldiers, workers,
 --       see :func:`prefilled_buildings`) and the following options:
 --
---       req_suitability
---          The reguired suitability for this building. Default value is 1.
 --    :type opts: :class:`table`
 --
 --    :returns: the building created
-function place_building_in_region(
-   plr, building, fields, gargs
-)
+function place_building_in_region(plr, building, fields, gargs)
    local idx
    local f
    local args = gargs or {}
-   local req_suitability = args.req_suitability or 1
 
    while #fields > 0 do
       local idx = math.random(#fields)
       local f = fields[idx]
 
-      if plr:get_suitability(building, f) >= req_suitability then
+      if plr:get_suitability(building, f) then
          args[1] = building
          args[2] = f.x
          args[3] = f.y

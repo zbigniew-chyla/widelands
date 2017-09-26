@@ -33,7 +33,8 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      prohibited_till = 600
+      basic_amount = 1,
+      prohibited_till = 570
    },
 
    working_positions = {
@@ -41,8 +42,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      corn = 6,
-      blackroot = 6
+      { name = "corn", amount = 6 },
+      { name = "blackroot", amount = 6 }
    },
    outputs = {
       "cornmeal",
@@ -67,6 +68,7 @@ tribes:new_productionsite_type {
             "return=skipped unless economy needs cornmeal",
             "sleep=3500",
             "consume=corn",
+            "play_sound=sound/mill mill_turning 240",
             "animate=working 15000",
             "produce=cornmeal"
          }
@@ -79,6 +81,7 @@ tribes:new_productionsite_type {
             "return=skipped when site has corn and economy needs cornmeal and not economy needs blackroot_flour",
             "sleep=3500",
             "consume=blackroot",
+            "play_sound=sound/mill mill_turning 240",
             "animate=working 15000",
             "produce=blackroot_flour"
          }

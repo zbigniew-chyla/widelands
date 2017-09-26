@@ -31,7 +31,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 450,
+      basic_amount = 1,
       prohibited_till = 350
    },
 
@@ -40,8 +40,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      corn = 7,
-      water = 7
+      { name = "water", amount = 7 },
+      { name = "corn", amount = 7 }
    },
    outputs = {
       "spider_silk"

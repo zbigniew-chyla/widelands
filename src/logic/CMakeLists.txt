@@ -1,19 +1,3 @@
-wl_binary(wl_map_info
-  SRCS
-    map_info.cc
-  USES_SDL2
-  DEPENDS
-    base_log
-    graphic
-    graphic_image_io
-    graphic_minimap_renderer
-    graphic_surface
-    io_fileread
-    io_filesystem
-    logic
-    map_io_map_loader
-)
-
 wl_library(logic_widelands_geometry
   SRCS
     widelands_geometry.cc
@@ -22,16 +6,27 @@ wl_library(logic_widelands_geometry
 
 wl_library(logic_game_settings
   SRCS
+    game_settings.cc
     game_settings.h
+    player_end_result.h
+  DEPENDS
+    io_filesystem
+    logic
+    logic_constants
+    notifications
+    scripting_lua_interface
+    scripting_lua_table
+)
+
+wl_library(logic_single_player_game_settings
+  SRCS
     single_player_game_settings_provider.cc
     single_player_game_settings_provider.h
   DEPENDS
     ai
     base_exceptions
-    io_filesystem
     logic
-    scripting_lua_interface
-    scripting_lua_table
+    logic_game_settings
 )
 
 wl_library(logic_game_controller
@@ -44,9 +39,10 @@ wl_library(logic_game_controller
   DEPENDS
     ai
     logic
+    logic_constants
+    logic_game_settings
     profile
     ui_basic
-    widelands_ball_of_mud
     wui
 )
 
@@ -60,8 +56,19 @@ wl_library(logic_campaign_visibility
     profile
 )
 
+wl_library(logic_constants
+  SRCS
+    constants.h
+    constants.cc
+    widelands.h
+  DEPENDS
+    base_macros
+)
+
 wl_library(logic
   SRCS
+    ai_dna_handler.cc
+    ai_dna_handler.h
     backtrace.cc
     backtrace.h
     cmd_calculate_statistics.cc
@@ -76,7 +83,6 @@ wl_library(logic
     cmd_luascript.h
     cmd_queue.cc
     cmd_queue.h
-    constants.h
     cookie_priority_queue.h
     description_maintainer.h
     editor_game_base.cc
@@ -134,23 +140,21 @@ wl_library(logic
     save_handler.h
     widelands_geometry_io.cc
     widelands_geometry_io.h
-    widelands.h
-    map_objects/attackable.h
     map_objects/bob.cc
     map_objects/bob.h
     map_objects/buildcost.cc
     map_objects/buildcost.h
     map_objects/checkstep.cc
     map_objects/checkstep.h
-    map_objects/immovable_program.h
+    map_objects/draw_text.h
     map_objects/immovable.cc
     map_objects/immovable.h
+    map_objects/immovable_program.h
     map_objects/map_object.cc
     map_objects/map_object.h
     map_objects/terrain_affinity.cc
     map_objects/terrain_affinity.h
-    map_objects/walkingdir.cc
-    map_objects/walkingdir.h
+    map_objects/tribes/attack_target.h
     map_objects/tribes/battle.cc
     map_objects/tribes/battle.h
     map_objects/tribes/bill_of_materials.h
@@ -162,6 +166,8 @@ wl_library(logic
     map_objects/tribes/constructionsite.h
     map_objects/tribes/dismantlesite.cc
     map_objects/tribes/dismantlesite.h
+    map_objects/tribes/market.cc
+    map_objects/tribes/market.h
     map_objects/tribes/militarysite.cc
     map_objects/tribes/militarysite.h
     map_objects/tribes/partially_finished_building.cc
@@ -197,15 +203,17 @@ wl_library(logic
     map_objects/tribes/warelist.h
     map_objects/tribes/wareworker.h
     map_objects/tribes/workarea_info.h
+    map_objects/tribes/worker.cc
+    map_objects/tribes/worker.h
     map_objects/tribes/worker_descr.cc
     map_objects/tribes/worker_descr.h
     map_objects/tribes/worker_program.cc
     map_objects/tribes/worker_program.h
-    map_objects/tribes/worker.cc
-    map_objects/tribes/worker.h
-    map_objects/world/critter_program.h
+    map_objects/walkingdir.cc
+    map_objects/walkingdir.h
     map_objects/world/critter.cc
     map_objects/world/critter.h
+    map_objects/world/critter_program.h
     map_objects/world/editor_category.cc
     map_objects/world/editor_category.h
     map_objects/world/map_gen.cc
@@ -225,6 +233,7 @@ wl_library(logic
     base_i18n
     base_log
     base_macros
+    base_math
     base_md5
     base_scoped_timer
     base_time_string
@@ -234,19 +243,24 @@ wl_library(logic
     game_io
     graphic
     graphic_color
+    graphic_fonthandler
     graphic_image_io
+    graphic_playercolor
     graphic_surface
+    graphic_text_constants
     graphic_text_layout
     helper
     io_fileread
     io_filesystem
     io_stream
+    logic_constants
     logic_game_controller
     logic_game_settings
     logic_widelands_geometry
     map_io
     map_io_map_loader
     network
+    note_sound
     notifications
     random
     scripting_coroutine
@@ -255,7 +269,6 @@ wl_library(logic
     scripting_lua_table
     sound
     ui_basic
-    widelands_ball_of_mud
     wui
     wui_mapview_pixelfunctions
 )

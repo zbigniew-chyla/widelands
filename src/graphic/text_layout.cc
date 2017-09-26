@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2012 by the Widelands Development Team
+ * Copyright (C) 2006-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,71 +25,95 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
-#include "base/utf8.h"
 #include "graphic/font_handler1.h"
 #include "graphic/image.h"
 #include "graphic/text/bidi.h"
 #include "graphic/text/font_set.h"
 #include "graphic/text_constants.h"
 
+namespace {
+bool is_paragraph(const std::string& text) {
+	return boost::starts_with(text, "<p");
+}
+
+bool is_div(const std::string& text) {
+	return boost::starts_with(text, "<div");
+}
+}  // namespace
+
 void replace_entities(std::string* text) {
 	boost::replace_all(*text, "&gt;", ">");
 	boost::replace_all(*text, "&lt;", "<");
 	boost::replace_all(*text, "&nbsp;", " ");
-	boost::replace_all(*text, "&amp;", "&"); // Must be performed last
+	boost::replace_all(*text, "&amp;", "&");  // Must be performed last
 }
 
-uint32_t text_width(const std::string& text, int ptsize) {
-	return UI::g_fh1->render(as_editorfont(text, ptsize - UI::g_fh1->fontset()->size_offset()))->width();
+int text_width(const std::string& text, int ptsize) {
+	return UI::g_fh1->render(as_editorfont(text, ptsize - UI::g_fh1->fontset()->size_offset()))
+	   ->width();
 }
 
-uint32_t text_height(const std::string& text, int ptsize) {
-	return UI::g_fh1->render(as_editorfont(text.empty() ? "." : text,
-														ptsize - UI::g_fh1->fontset()->size_offset()))->height();
+int text_height(int ptsize, UI::FontSet::Face face) {
+	return UI::g_fh1->render(as_aligned(UI::g_fh1->fontset()->representative_character(),
+	                                    UI::Align::kLeft,
+	                                    ptsize - UI::g_fh1->fontset()->size_offset(),
+	                                    RGBColor(0, 0, 0), face))
+	   ->height();
 }
 
 std::string richtext_escape(const std::string& given_text) {
 	std::string text = given_text;
-	boost::replace_all(text, "&", "&amp;"); // Must be performed first
+	boost::replace_all(text, "&", "&amp;");  // Must be performed first
 	boost::replace_all(text, ">", "&gt;");
 	boost::replace_all(text, "<", "&lt;");
 	return text;
 }
 
 std::string as_game_tip(const std::string& txt) {
-	static boost::format f
-		("<rt padding_l=48 padding_t=28 padding_r=48 padding_b=28>"
-		 "<p align=center><font color=21211b face=serif size=16>%s</font></p></rt>");
+	static boost::format f(
+	   "<rt padding_l=48 padding_t=28 padding_r=48 padding_b=28>"
+	   "<p align=center><font color=21211b face=serif size=16>%s</font></p></rt>");
 
 	f % txt;
 	return f.str();
 }
 
-std::string as_uifont(const std::string & txt, int size, const RGBColor& clr, UI::FontSet::Face face) {
+std::string
+as_uifont(const std::string& txt, int size, const RGBColor& clr, UI::FontSet::Face face) {
 	return as_aligned(txt, UI::Align::kLeft, size, clr, face);
 }
 
-std::string as_condensed(const std::string& text, UI::Align align, int ptsize, const RGBColor& clr) {
+std::string
+as_condensed(const std::string& text, UI::Align align, int ptsize, const RGBColor& clr) {
 	return as_aligned(text, align, ptsize, clr, UI::FontSet::Face::kCondensed);
 }
 
 std::string as_editorfont(const std::string& text, int ptsize, const RGBColor& clr) {
 	// UI Text is always bold due to historic reasons
-	static boost::format
-			f("<rt keep_spaces=1><p><font face=sans size=%i bold=1 shadow=1 color=%s>%s</font></p></rt>");
+	static boost::format f(
+	   "<rt keep_spaces=1><p><font face=sans size=%i bold=1 shadow=1 color=%s>%s</font></p></rt>");
 	f % ptsize;
 	f % clr.hex_value();
 	f % richtext_escape(text);
 	return f.str();
 }
 
-std::string as_aligned(const std::string & txt, UI::Align align, int ptsize, const RGBColor& clr,
-							  UI::FontSet::Face face) {
+std::string as_aligned(const std::string& txt,
+                       UI::Align align,
+                       int ptsize,
+                       const RGBColor& clr,
+                       UI::FontSet::Face face) {
 	std::string alignment = "left";
-	if ((align & UI::Align::kHorizontal) == UI::Align::kRight) {
-		alignment = "right";
-	} else if ((align & UI::Align::kHorizontal) == UI::Align::kHCenter) {
+	switch (align) {
+	case UI::Align::kCenter:
 		alignment = "center";
+		break;
+	case UI::Align::kRight:
+		alignment = "right";
+		break;
+	case UI::Align::kLeft:
+		alignment = "left";
+		break;
 	}
 
 	std::string font_face = "sans";
@@ -107,8 +131,8 @@ std::string as_aligned(const std::string & txt, UI::Align align, int ptsize, con
 	}
 
 	// UI Text is always bold due to historic reasons
-	static boost::format
-			f("<rt><p align=%s><font face=%s size=%i bold=1 shadow=1 color=%s>%s</font></p></rt>");
+	static boost::format f(
+	   "<rt><p align=%s><font face=%s size=%i bold=1 shadow=1 color=%s>%s</font></p></rt>");
 	f % alignment;
 	f % font_face;
 	f % ptsize;
@@ -117,7 +141,7 @@ std::string as_aligned(const std::string & txt, UI::Align align, int ptsize, con
 	return f.str();
 }
 
-std::string as_tooltip(const std::string & txt) {
+std::string as_tooltip(const std::string& txt) {
 	static boost::format f("<rt><p><font face=sans size=%i bold=1 color=%s>%s</font></p></rt>");
 
 	f % UI_FONT_SIZE_SMALL;
@@ -126,121 +150,81 @@ std::string as_tooltip(const std::string & txt) {
 	return f.str();
 }
 
-std::string as_waresinfo(const std::string & txt) {
-	static boost::format f
-		("<rt><p><font face=condensed size=10 bold=0 color=%s>%s</font></p></rt>");
+std::string as_waresinfo(const std::string& txt) {
+	static boost::format f("<rt><p><font face=condensed size=10 bold=0 color=%s>%s</font></p></rt>");
 	f % UI_FONT_TOOLTIP_CLR.hex_value();
 	f % txt;
 	return f.str();
 }
 
-const Image* autofit_ui_text(const std::string& text, int width, RGBColor color, int fontsize) {
-	const Image* result =
-		UI::g_fh1->render(as_uifont(richtext_escape(text), fontsize, color));
-	if (width > 0) { // Autofit
+std::string as_message(const std::string& heading, const std::string& body) {
+	return ((boost::format(
+	            "<rt><p><font size=18 bold=1 color=D1D1D1>%s<br></font></p><vspace gap=6>%s</rt>") %
+	         heading % (is_paragraph(body) || is_div(body) ? body : "<p>" + body + "</p>"))
+	           .str());
+}
+
+std::shared_ptr<const UI::RenderedText>
+autofit_ui_text(const std::string& text, int width, RGBColor color, int fontsize) {
+	std::shared_ptr<const UI::RenderedText> result =
+	   UI::g_fh1->render(as_uifont(richtext_escape(text), fontsize, color));
+	if (width > 0) {  // Autofit
 		for (; result->width() > width && fontsize >= kMinimumFontSize; --fontsize) {
-			result = UI::g_fh1->render(as_condensed(richtext_escape(text), UI::Align::kLeft, fontsize, color));
+			result = UI::g_fh1->render(
+			   as_condensed(richtext_escape(text), UI::Align::kLeft, fontsize, color));
 		}
 	}
 	return result;
 }
-
 
 namespace UI {
 
-
 /**
- * Prepare the TTF style settings for rendering in this style.
+ * This mirrors the horizontal alignment for RTL languages.
+ *
+ * Do not store this value as it is based on the global font setting.
+ *
+ * If 'checkme' is not empty, mirror the alignment if the first 20 characters contain an RTL
+ * character. Otherwise, mirror if the current fontset is RTL.
  */
-void TextStyle::setup() const
-{
-	int32_t font_style = TTF_STYLE_NORMAL;
-	if (bold)
-		font_style |= TTF_STYLE_BOLD;
-	if (italics)
-		font_style |= TTF_STYLE_ITALIC;
-	if (underline)
-		font_style |= TTF_STYLE_UNDERLINE;
-	TTF_SetFontStyle(font->get_ttf_font(), font_style);
-}
-
-/**
- * Get a width estimate for text wrapping.
- */
-uint32_t TextStyle::calc_width_for_wrapping(const UChar& c) const {
-	int result = 0;
-	TTF_GlyphMetrics(font->get_ttf_font(), c, nullptr, nullptr, nullptr, nullptr, &result);
-	return result;
-}
-
-/**
- * Get a width estimate for text wrapping.
- */
-uint32_t TextStyle::calc_width_for_wrapping(const std::string & text) const
-{
-	int result = 0;
-	const icu::UnicodeString parseme(text.c_str(), "UTF-8");
-	for (int i = 0; i < parseme.length(); ++i) {
-		UChar c = parseme.charAt(i);
-		if (!i18n::is_diacritic(c)) {
-			result += calc_width_for_wrapping(c);
+Align mirror_alignment(Align alignment, const std::string& checkme) {
+	bool do_swap_alignment = checkme.empty() ? UI::g_fh1->fontset()->is_rtl() :
+	                                           i18n::has_rtl_character(checkme.c_str(), 20);
+	if (do_swap_alignment) {
+		switch (alignment) {
+		case Align::kLeft:
+			alignment = Align::kRight;
+			break;
+		case Align::kRight:
+			alignment = Align::kLeft;
+			break;
+		case Align::kCenter:
+			break;
 		}
 	}
-	return result;
+	return alignment;
 }
 
 /**
- * Compute the bare width (without caret padding) of the given string.
- */
-uint32_t TextStyle::calc_bare_width(const std::string & text) const
-{
-	int w, h;
-	setup();
-
-	TTF_SizeUTF8(font->get_ttf_font(), text.c_str(), &w, &h);
-	return w;
-}
-
-/**
- * \note Please only use this function once you understand the definitions
- * of ascent/descent etc.
+ * Align pt horizontally to match align based on width w.
  *
- * Computes the actual line height we should use for rendering the given text.
- * This is heuristic, because it pre-initializes the miny and maxy values to
- * the ones that are typical for Latin scripts, so that lineskips should always
- * be the same for such scripts.
+ * When correcting for align, we never move from pixel boundaries to
+ * sub-pixels, because this might lead from pixel-perfect rendering to
+ * subsampled rendering - this can lead to blurry texts. That is why we
+ * never do float divisions in this function.
  */
-void TextStyle::calc_bare_height_heuristic(const std::string & text, int32_t & miny, int32_t & maxy) const
-{
-	miny = font->computed_typical_miny_;
-	maxy = font->computed_typical_maxy_;
+void correct_for_align(Align align, uint32_t w, Vector2i* pt) {
 
-	setup();
-	std::string::size_type pos = 0;
-	while (pos < text.size()) {
-		uint16_t ch = Utf8::utf8_to_unicode(text, pos);
-		int32_t glyphminy, glyphmaxy;
-		TTF_GlyphMetrics(font->get_ttf_font(), ch, nullptr, nullptr, &glyphminy, &glyphmaxy, nullptr);
-		miny = std::min(miny, glyphminy);
-		maxy = std::max(maxy, glyphmaxy);
-	}
+	if (align == Align::kCenter)
+		pt->x -= w / 2;
+	else if (align == Align::kRight)
+		pt->x -= w;
 }
 
-
-/*
-=============================
-
-Default styles
-
-=============================
-*/
-
-TextStyle::TextStyle() :
-	font(Font::get(UI::g_fh1->fontset()->sans(), UI_FONT_SIZE_SMALL)),
-	fg(UI_FONT_CLR_FG),
-	bold(true),
-	italics(false),
-	underline(false)
-{}
-
-} // namespace UI
+/**
+ * Adjust the y coordinate in 'point 'pt' to vertically center an element with height 'h'.
+ */
+void center_vertically(uint32_t h, Vector2i* pt) {
+	pt->y -= h / 2;
+}
+}  // namespace UI

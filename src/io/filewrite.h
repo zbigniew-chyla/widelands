@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 by the Widelands Development Team
+ * Copyright (C) 2008-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ public:
 		Pos operator++() {
 			return ++pos;
 		}
-		Pos operator += (Pos const other) {
+		Pos operator+=(const Pos& other) {
 			return pos += other.pos;
 		}
 
@@ -78,17 +78,13 @@ public:
 	/// worry, it will be cleared by the destructor).
 	void write(FileSystem& fs, char const* const filename);
 
-	/// Same as above, just that the data is appended to the file
-	/// NOTE RealFSImpl is used by purpose - zip filesystems do not support appending
-	void write_append(RealFSImpl& fs, char const* const filename);
-
 	/// Get the position that will be written to in the next write operation that
 	/// does not specify a position.
 	Pos get_pos() const;
 
 	/// Set the file pointer to a new location. The position can be beyond the
 	/// current end of file.
-	void set_pos(Pos pos);
+	void set_pos(const Pos& pos);
 
 	/// Write data at the given location.
 	void data(const void* src, size_t size, Pos pos);

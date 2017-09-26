@@ -31,7 +31,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      prohibited_till = 600
+      prohibited_till = 380
    },
 
    working_positions = {
@@ -39,8 +39,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      wheat = 7,
-      water = 7
+      { name = "water", amount = 7 },
+      { name = "wheat", amount = 7 }
    },
    outputs = {
       "wool"

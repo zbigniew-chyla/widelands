@@ -35,7 +35,6 @@ tribes:new_trainingsite_type {
 
    aihints = {
       prohibited_till = 1500,
-      trainingsite_type = "advanced",
       very_weak_ai_limit = 0,
       weak_ai_limit = 1
    },
@@ -45,17 +44,17 @@ tribes:new_trainingsite_type {
    },
 
    inputs = {
-      empire_bread = 10,
-      fish = 6,
-      meat = 6,
-      spear = 2,
-      spear_advanced = 2,
-      spear_heavy = 2,
-      spear_war = 2,
-      armor_helmet = 2,
-      armor = 2,
-      armor_chain = 2,
-      armor_gilded = 2
+      { name = "fish", amount = 6 },
+      { name = "meat", amount = 6 },
+      { name = "empire_bread", amount = 10 },
+      { name = "spear", amount = 2 },
+      { name = "spear_advanced", amount = 2 },
+      { name = "spear_heavy", amount = 2 },
+      { name = "spear_war", amount = 2 },
+      { name = "armor_helmet", amount = 2 },
+      { name = "armor", amount = 2 },
+      { name = "armor_chain", amount = 2 },
+      { name = "armor_gilded", amount = 2 },
    },
    outputs = {
       "empire_soldier",
@@ -101,7 +100,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_attack_0 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier attack from level 0 to level 1",
+         descname = pgettext("empire_building", "upgrading soldier attack from level 0 to level 1"),
          actions = {
             "check_soldier=soldier attack 0", -- Fails when aren't any soldier of level 0 attack
             "sleep=30000",
@@ -112,7 +111,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_attack_1 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier attack from level 1 to level 2",
+         descname = pgettext("empire_building", "upgrading soldier attack from level 1 to level 2"),
          actions = {
             "check_soldier=soldier attack 1",
             "sleep=30000",
@@ -123,7 +122,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_attack_2 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier attack from level 2 to level 3",
+         descname = pgettext("empire_building", "upgrading soldier attack from level 2 to level 3"),
          actions = {
             "check_soldier=soldier attack 2",
             "sleep=30000",
@@ -134,7 +133,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_attack_3 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier attack from level 3 to level 4",
+         descname = pgettext("empire_building", "upgrading soldier attack from level 3 to level 4"),
          actions = {
             "check_soldier=soldier attack 3",
             "sleep=30000",
@@ -145,7 +144,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_health_0 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier health from level 0 to level 1",
+         descname = pgettext("empire_building", "upgrading soldier health from level 0 to level 1"),
          actions = {
             "check_soldier=soldier health 0",
             "sleep=30000",
@@ -156,7 +155,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_health_1 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier health from level 1 to level 2",
+         descname = pgettext("empire_building", "upgrading soldier health from level 1 to level 2"),
          actions = {
             "check_soldier=soldier health 1",
             "sleep=30000",
@@ -167,7 +166,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_health_2 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier health from level 2 to level 3",
+         descname = pgettext("empire_building", "upgrading soldier health from level 2 to level 3"),
          actions = {
             "check_soldier=soldier health 2",
             "sleep=30000",
@@ -178,7 +177,7 @@ tribes:new_trainingsite_type {
       },
       upgrade_soldier_health_3 = {
          -- TRANSLATORS: Completed/Skipped/Did not start upgrading ... because ...
-         descname = _"upgrading soldier health from level 3 to level 4",
+         descname = pgettext("empire_building", "upgrading soldier health from level 3 to level 4"),
          actions = {
             "check_soldier=soldier health 3",
             "sleep=30000",

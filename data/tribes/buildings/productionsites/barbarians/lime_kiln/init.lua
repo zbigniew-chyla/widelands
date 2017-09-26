@@ -31,9 +31,9 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 600,
       very_weak_ai_limit = 1,
-      weak_ai_limit = 2
+      weak_ai_limit = 2,
+      basic_amount = 1
    },
 
    working_positions = {
@@ -41,9 +41,9 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      granite = 6,
-      water = 6,
-      coal = 3
+      { name = "granite", amount = 6 },
+      { name = "water", amount = 6 },
+      { name = "coal", amount = 3 }
    },
    outputs = {
       "grout"
@@ -57,7 +57,10 @@ tribes:new_productionsite_type {
             "sleep=50000",
             "return=skipped unless economy needs grout",
             "consume=coal granite:2 water:2",
-            "animate=working 32000",
+            "play_sound=sound/barbarians stonegrind 100",
+            "animate=working 29000",
+            "play_sound=sound/barbarians mortar 80",
+            "sleep=3000",
             "produce=grout:2"
          }
       },

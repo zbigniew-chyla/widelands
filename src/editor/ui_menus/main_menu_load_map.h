@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002-2004, 2006, 2008-2015 by the Widelands Development Team
+ * Copyright (C) 2002-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,10 +29,12 @@
  * Choose a filename and save your brand new created map
 */
 struct MainMenuLoadMap : public MainMenuLoadOrSaveMap {
-	MainMenuLoadMap(EditorInteractive& parent);
+	explicit MainMenuLoadMap(EditorInteractive& parent);
 
 protected:
 	void clicked_ok() override;
+	// Sets the current dir and updates labels.
+	void set_current_directory(const std::string& filename) override;
 
 private:
 	void entry_selected();

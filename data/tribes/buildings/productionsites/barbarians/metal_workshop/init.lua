@@ -44,8 +44,10 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      forced_after = 400,
-      prohibited_till = 400
+      basic_amount = 2,
+      prohibited_till = 400,
+      weak_ai_limit = 2,
+      very_weak_ai_limit = 1
    },
 
    working_positions = {
@@ -53,8 +55,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      iron = 8,
-      log = 8
+      { name = "log", amount = 8 },
+      { name = "iron", amount = 8 }
    },
    outputs = {
       "bread_paddle",

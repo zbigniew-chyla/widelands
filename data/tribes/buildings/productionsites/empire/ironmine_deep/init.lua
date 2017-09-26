@@ -35,7 +35,7 @@ tribes:new_productionsite_type {
    },
 
    aihints = {
-      mines = "gold"
+      mines = "iron"
    },
 
    working_positions = {
@@ -44,8 +44,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      meal = 6,
-      beer = 6
+      { name = "meal", amount = 6 },
+      { name = "beer", amount = 6 }
    },
    outputs = {
       "iron_ore"

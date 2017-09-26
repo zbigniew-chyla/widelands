@@ -30,9 +30,7 @@ tribes:new_productionsite_type {
       },
    },
 
-   aihints = {
-      prohibited_till = 600,
-   },
+   aihints = {},
 
    working_positions = {
       barbarians_brewer_master = 1,
@@ -40,8 +38,8 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      water = 8,
-      wheat = 8
+      { name = "water", amount = 8 },
+      { name = "wheat", amount = 8 }
    },
    outputs = {
       "beer_strong"

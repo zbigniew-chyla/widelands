@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2009 by the Widelands Development Team
+ * Copyright (C) 2006-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@
 
 #include <SDL_mixer.h>
 
-
 class SoundHandler;
 
 /// Predefined priorities for easy reading
@@ -46,16 +45,18 @@ class SoundHandler;
  */
 struct FXset {
 	friend class SoundHandler;
-	FXset(uint8_t priority = PRIO_MEDIUM);
+	explicit FXset(uint8_t priority = PRIO_MEDIUM);
 	~FXset();
 
-	void add_fx(Mix_Chunk * fx, uint8_t prio = PRIO_MEDIUM);
-	Mix_Chunk * get_fx();
-	bool empty() {return fxs_.empty();}
+	void add_fx(Mix_Chunk* fx, uint8_t prio = PRIO_MEDIUM);
+	Mix_Chunk* get_fx();
+	bool empty() {
+		return fxs_.empty();
+	}
 
 protected:
 	/// The collection of sound effects
-	std::vector<Mix_Chunk *> fxs_;
+	std::vector<Mix_Chunk*> fxs_;
 
 	/** When the effect was played the last time (milliseconds since SDL
 	 * initialization). Set via SDL_GetTicks()

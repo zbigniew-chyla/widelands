@@ -141,6 +141,7 @@ tribes:new_tribe {
       },
       {
          -- Military
+         "empire_recruit",
          "empire_soldier",
          "empire_trainer",
          "empire_weaponsmith",
@@ -206,6 +207,7 @@ tribes:new_tribe {
       "empire_toolsmithy",
       "empire_armorsmithy",
       "empire_shipyard",
+      "empire_barracks",
 
       -- Big
       "empire_donkeyfarm",
@@ -323,4 +325,9 @@ tribes:new_tribe {
    ship = "empire_ship",
    headquarters = "empire_headquarters",
    port = "empire_port",
+   barracks = "empire_barracks",
+   ironore = "iron_ore",
+   rawlog = "log",
+   refinedlog = "planks",
+   granite = "granite",
 }

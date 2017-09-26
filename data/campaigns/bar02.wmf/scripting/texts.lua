@@ -16,6 +16,21 @@ end
 -- =======================================================================
 
 
+obj_build_basic_economy = {
+   name = "build_basic_food_economy",
+   title = _"Build up a basic economy",
+   number = 5,
+   body = objective_text(_"Build up a basic economy",
+      _"Start collecting basic building materials, and fortify the camp."
+      .. paragraphdivider() ..
+      listitem_bullet(_"Build a lumberjack’s hut") ..
+      listitem_bullet(_"Build a ranger’s hut") ..
+      listitem_bullet(_"Build a quarry") ..
+      listitem_bullet(_"Build a wood hardener") ..
+      listitem_bullet(_"Build a sentry on the eastern border") ..
+      listitem_arrow(_"You should eventually also build a reed yard and a lime kiln."))
+}
+
 obj_build_small_food_economy = {
    name = "build_small_food_economy",
    title = _"Build up a small food economy",
@@ -78,6 +93,7 @@ obj_build_training_infrastructure = {
    title = _"Build a training infrastructure",
    number = 4,
    body = objective_text(_"Build a training infrastructure",
+      listitem_bullet(_"Build a barracks to train some basic soldiers.") ..
       listitem_bullet(_"Build a battle arena and a training camp to the west of the mountains.") ..
       listitem_bullet(_"Enhance your metal workshop to an ax workshop in order to produce weapons, and build up a second metal workshop to ensure the production of tools. When the blacksmith reaches his next level (master blacksmith), you can even enhance the ax workshop to a war mill, which will produce additional weapons.") ..
       listitem_bullet(_"Build a helm smithy to the west of the mountains to provide your soldiers with better armor."))
@@ -98,8 +114,8 @@ obj_build_trainingssites = {
    title = _"Build training sites",
    number = 2,
    body = objective_text(_"Build training sites",
-      listitem_bullet(_"Build a battle arena and a training camp to the west of the mountains.") ..
-      listitem_arrow(_"Training sites like a training camp or a battle arena are used for training soldiers in their different attributes. These attributes are important in fights and the better a soldier is, the higher is the chance to win a fight."
+      listitem_bullet(_"Build a barracks, a battle arena and a training camp to the west of the mountains.") ..
+      listitem_arrow(_"Barracks train basic soldiers while training sites like a training camp or a battle arena are used for training soldiers in their different attributes. These attributes are important in fights and the better a soldier is, the higher is the chance to win a fight."
       .. "<br>" ..
       _"The attributes are: health, attack, defense and evade."))
 }
@@ -149,6 +165,7 @@ story_msg_1 = {
       .. paragraphdivider() ..
       -- TRANSLATORS: Thron
       _([[For now, we are resting at the borders of the old forest and preparing for the coming days.]]))
+      .. new_objectives(obj_build_basic_economy)
 }
 
 story_msg_2 = {
@@ -188,7 +205,7 @@ story_msg_6 = {
    title = _"The Story Continues",
    body = thron(_"Thron says:",
       -- TRANSLATORS: Thron
-      _([[I have sent men to meet with Kalitath in his fortress. He has barricaded the former main entrance to the capital and is trying to set up a siege ring around Al’thunran. He will not let anyone enter or leave the city while the ring is intact. Until now, he has not answered any of my messages. But the time I spend waiting won’t be lost. I will further upgrade my soldiers and prepare for battle.]]))
+      _([[I have sent men to meet with Kalitath in his fortress. He has barricaded the former main entrance to the capital and is trying to set up a siege ring around Al’thunran. He will not let anyone enter or leave the city while the ring is intact. Until now, he has not answered any of my messages. But the time I spend waiting won’t be lost. I will train my soldiers further and prepare for battle.]]))
 }
 
 order_msg_7_destroy_kalitaths_army = {
@@ -245,7 +262,7 @@ order_msg_2_build_a_tower = {
    title = _"Tracks",
    body = boldreth(_"Boldreth says:",
       -- TRANSLATORS: Boldreth
-      _([[Thron told me that he discovered tracks in the snow to the northeast of our settlement. He has instructed us to build a tower,  to have a greater visual range over the area around our hall to protect our people from sudden attacks.]]))
+      _([[Thron told me that he discovered tracks in the snow to the northeast of our settlement. He has instructed us to build a tower, to have a greater visual range over the area around our hall to protect our people from sudden attacks.]]))
       .. new_objectives(obj_build_a_tower)
 }
 

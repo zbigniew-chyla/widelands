@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002-2004, 2006-2011 by the Widelands Development Team
+ * Copyright (C) 2002-2017 by the Widelands Development Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -48,14 +48,16 @@ WLMessageBox::WLMessageBox(Panel* const parent,
 	const int margin = 5;
 	int width, height = 0;
 	{
-		const Image* temp_rendered_text = g_fh1->render(as_uifont(text), maxwidth);
+		std::shared_ptr<const UI::RenderedText> temp_rendered_text =
+		   g_fh1->render(as_uifont(text), maxwidth);
 		width = temp_rendered_text->width();
 		height = temp_rendered_text->height();
 	}
 
 	// Stupid heuristic to avoid excessively long lines
 	if (height < 2 * UI_FONT_SIZE_SMALL) {
-		const Image* temp_rendered_text = g_fh1->render(as_uifont(text), maxwidth / 2);
+		std::shared_ptr<const UI::RenderedText> temp_rendered_text =
+		   g_fh1->render(as_uifont(text), maxwidth / 2);
 		width = temp_rendered_text->width();
 		height = temp_rendered_text->height();
 	}
@@ -71,36 +73,26 @@ WLMessageBox::WLMessageBox(Panel* const parent,
 		scrollmode = MultilineTextarea::ScrollMode::kScrollNormal;
 	}
 
-	textarea_.reset(new MultilineTextarea(
-	   this, margin, margin, width - 2 * margin, height, text, align, scrollmode));
+	textarea_.reset(new MultilineTextarea(this, margin, margin, width - 2 * margin, height, text,
+	                                      align, g_gr->images().get("images/ui_basic/but1.png"),
+	                                      scrollmode));
 
 	// Now add the buttons
 	const int button_y = textarea_->get_y() + textarea_->get_h() + 2 * margin;
 	const int left_button_x = width / 3 - button_w / 2;
 	const int right_button_x = width * 2 / 3 - button_w / 2;
 
-	ok_button_.reset(new Button(this,
-	                            "ok",
-	                            type_ == MBoxType::kOk ?
-	                               (width - button_w) / 2 :
-											 UI::g_fh1->fontset()->is_rtl() ? left_button_x : right_button_x,
-	                            button_y,
-	                            button_w,
-	                            0,
-	                            g_gr->images().get("images/ui_basic/but5.png"),
-	                            _("OK")));
+	ok_button_.reset(new Button(
+	   this, "ok",
+	   type_ == MBoxType::kOk ? (width - button_w) / 2 :
+	                            UI::g_fh1->fontset()->is_rtl() ? left_button_x : right_button_x,
+	   button_y, button_w, 0, g_gr->images().get("images/ui_basic/but5.png"), _("OK")));
 	ok_button_->sigclicked.connect(boost::bind(&WLMessageBox::clicked_ok, boost::ref(*this)));
 
 	if (type_ == MBoxType::kOkCancel) {
-		cancel_button_.reset(
-		   new Button(this,
-		              "cancel",
-						  UI::g_fh1->fontset()->is_rtl() ? right_button_x : left_button_x,
-		              button_y,
-		              button_w,
-		              0,
-		              g_gr->images().get("images/ui_basic/but1.png"),
-		              _("Cancel")));
+		cancel_button_.reset(new Button(
+		   this, "cancel", UI::g_fh1->fontset()->is_rtl() ? right_button_x : left_button_x, button_y,
+		   button_w, 0, g_gr->images().get("images/ui_basic/but1.png"), _("Cancel")));
 		cancel_button_->sigclicked.connect(
 		   boost::bind(&WLMessageBox::clicked_back, boost::ref(*this)));
 	}

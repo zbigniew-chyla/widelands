@@ -44,7 +44,7 @@ tribes:new_productionsite_type {
    aihints = {
       needs_water = true,
       shipyard = true,
-      prohibited_till = 1500
+      prohibited_till = 1050
    },
 
    working_positions = {
@@ -52,9 +52,9 @@ tribes:new_productionsite_type {
    },
 
    inputs = {
-      planks = 10,
-      log = 2,
-      cloth = 4
+      { name = "log", amount = 2 },
+      { name = "planks", amount = 10 },
+      { name = "cloth", amount = 4 }
    },
 
    programs = {

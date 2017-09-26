@@ -128,6 +128,12 @@ return {
       font = "default"
    },
 
+   ga = {
+      name = "Gaeilge",
+      sort_name = "Gaeilge",
+      font = "default"
+   },
+
    gd = {
       name = "Gàidhlig",
       sort_name = "Gaidhlig",
@@ -204,6 +210,12 @@ return {
       name = "한국어",
       sort_name = "Hangug-eo",
       font = "cjk"
+   },
+
+   krl = {
+      name = "Karjala",
+      sort_name = "Karjala",
+      font = "default"
    },
 
    la = {
