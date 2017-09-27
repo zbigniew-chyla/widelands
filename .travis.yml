@@ -1,5 +1,7 @@
 language: cpp
-before_install: bash -e .travis.sh
+before_install:
+  - bash -e .travis.sh
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 sudo: required
 dist: trusty
 
@@ -12,7 +14,8 @@ env:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "QFKfKCTDzhIpO12glYXbC285SPOTxBmdsi0UzsQJ6t1T43Z6n6eLVT4XnB90H4h4ri+sKyF2Qc0T/mshvPS/U74SENTb8Hz8w2NOQOpIII+YDGPGABidupnJtgsjOk36n+id8ZxIym40/uoZEOUYCkdQM2AZex1sNKTwlGPr7X8="
-
+before_install:
+      
 # Let travis add additional repos and install packages for us (https://docs.travis-ci.com/user/migrating-from-legacy/#Adding-APT-Sources)
 addons:
   apt:
