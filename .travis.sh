@@ -21,42 +21,4 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   brew link --force gettext
   brew link --force icu4c
 fi
-
-# Configure the build
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE:STRING="$BUILD_TYPE"
-
-if [ "$BUILD_TYPE" == "Debug" ]; then
-
-   # Build the documentation. Any warning is an error.
-   sudo pip install sphinx
-   pushd ../doc/sphinx
-   mkdir source/_static
-   ./extract_rst.py
-   sphinx-build -W -b json -d build/doctrees source build/json
-   popd
-
-   # Run the codecheck test suite.
-   pushd ../cmake/codecheck
-   ./run_tests.py
-   popd
-
-   # Any codecheck warning is an error in Debug builds. Keep the codebase clean!!
-   # Suppress color output.
-   TERM=dumb make -j1 codecheck 2>&1 | tee codecheck.out
-   if grep '^[/_.a-zA-Z]\+:[0-9]\+:' codecheck.out; then 
-      echo "You have codecheck warnings (see above) Please fix."
-      exit 1 # CodeCheck warnings.
-   fi
-fi
-
-# Do the actual build.
-make -k -j3
-
-if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-  # Run the regression suite. Haven't gotten it working on osx, due to problems with xvfb and/or opengl support.
-  cd ..
-  ./regression_test.py -b build/src/widelands
-fi
->>>>>>> refs/remotes/origin/master
+#Build for Coverity by commands in .travis.yml

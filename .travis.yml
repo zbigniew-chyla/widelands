@@ -20,12 +20,6 @@ addons:
     # Clang 3.4 and 3.5 are too old (presumably) to have gotten official aliases
     sources:
       - ubuntu-toolchain-r-test
-      - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.4 main"
-        key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
-      - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.5 main"
-        key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
-      - llvm-toolchain-trusty-3.9
-      - llvm-toolchain-trusty-4.0
     packages:
       - cmake
       - libboost-dev
