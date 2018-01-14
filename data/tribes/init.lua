@@ -233,6 +233,7 @@ print_loading_message("┗━ took", function()
       include "tribes/workers/barbarians/smelter/init.lua"
       include "tribes/workers/barbarians/soldier/init.lua"
       include "tribes/workers/barbarians/stonemason/init.lua"
+      include "tribes/workers/barbarians/taverner/init.lua"
       include "tribes/workers/barbarians/trainer/init.lua"
       include "tribes/workers/barbarians/weaver/init.lua"
 
@@ -263,6 +264,7 @@ print_loading_message("┗━ took", function()
       include "tribes/workers/empire/smelter/init.lua"
       include "tribes/workers/empire/soldier/init.lua"
       include "tribes/workers/empire/stonemason/init.lua"
+      include "tribes/workers/empire/taverner/init.lua"
       include "tribes/workers/empire/toolsmith/init.lua"
       include "tribes/workers/empire/trainer/init.lua"
       include "tribes/workers/empire/vinefarmer/init.lua"

@@ -43,7 +43,7 @@ tribes:new_productionsite_type {
    },
 
    working_positions = {
-      barbarians_innkeeper = 1
+      barbarians_taverner = 1
    },
 
    inputs = {

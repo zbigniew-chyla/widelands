@@ -117,6 +117,7 @@ tribes:new_tribe {
          "barbarians_baker",
          "barbarians_brewer",
          "barbarians_brewer_master",
+         "barbarians_taverner",
          "barbarians_innkeeper"
       },
       {

@@ -19,10 +19,5 @@ tribes:new_worker_type {
    icon = dirname .. "menu.png",
    vision_range = 2,
 
-   buildcost = {
-      empire_carrier = 1,
-      kitchen_tools = 1
-   },
-
    animations = animations,
 }
