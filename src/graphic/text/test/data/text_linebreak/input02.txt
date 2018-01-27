@@ -1,6 +1,0 @@
-<rt>
-   <p>
-      Hello   
-      beautiful  World
-   </p>
-</rt>
