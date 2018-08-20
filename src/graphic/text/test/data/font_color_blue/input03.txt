@@ -1,3 +1,0 @@
-<rt>
-   <p>Hello <font color=0000FF>colorful</font> World</p>
-</rt>
