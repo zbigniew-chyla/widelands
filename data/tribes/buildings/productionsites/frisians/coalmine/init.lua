@@ -64,12 +64,22 @@ tribes:new_productionsite_type {
          -- TRANSLATORS: Completed/Skipped/Did not start mining coal because ...
          descname = _"mining coal",
          actions = {
-            "sleep=45000",
+            "sleep=5000",
             "return=skipped unless economy needs coal",
             "consume=ration",
-            "animate=working 40000",
+            "sleep=40000",
+            "call=mine_produce",
+            "call=mine_produce",
+            "return=skipped"
+         }
+      },
+      mine_produce = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining and producing because ...
+         descname = _"mining and producing",
+         actions = {
+            "animate=working 15000",
             "mine=coal 3 50 5 20",
-            "produce=coal:2"
+            "produce=coal",
          }
       },
    },

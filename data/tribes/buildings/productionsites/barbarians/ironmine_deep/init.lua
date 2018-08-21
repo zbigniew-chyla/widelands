@@ -60,15 +60,24 @@ tribes:new_productionsite_type {
          -- TRANSLATORS: Completed/Skipped/Did not start mining iron because ...
          descname = _"mining iron",
          actions = {
-            "sleep=43000",
+            "sleep=5000",
             "return=skipped unless economy needs iron_ore",
             "consume=snack",
-            "animate=working 18000",
+            "sleep=35000",
+            "call=mine_produce",
+            "call=mine_produce",
+            "call=mine_produce",
+            "call=mine_produce",
+            "return=skipped"
+         }
+      },
+      mine_produce = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining and producing because ...
+         descname = _"mining and producing",
+         actions = {
+            "animate=working 9500",
             "mine=iron 2 66 5 17",
             "produce=iron_ore",
-            "animate=working 18000",
-            "mine=iron 2 66 5 17",
-            "produce=iron_ore:1"
          }
       },
    },

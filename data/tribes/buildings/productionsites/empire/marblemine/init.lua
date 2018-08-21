@@ -60,8 +60,22 @@ tribes:new_productionsite_type {
          -- TRANSLATORS: Completed/Skipped/Did not start working because ...
          descname = _"working",
          actions = {
-            "call=mine_marble",
             "call=mine_granite",
+            "call=mine_marble",
+            "return=skipped"
+         }
+      },
+      mine_granite = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining granite because ...
+         descname = _"mining granite",
+         actions = {
+            "sleep=18000",
+            "return=skipped unless economy needs marble or economy needs granite",
+            "consume=ration wine",
+            "call=a_mine_produce_granite",
+            "call=a_mine_produce_granite",
+            "call=a_mine_produce_marble",
+            "call=a_mine_produce_granite",
             "return=skipped"
          }
       },
@@ -69,30 +83,32 @@ tribes:new_productionsite_type {
          -- TRANSLATORS: Completed/Skipped/Did not start mining marble because ...
          descname = _"mining marble",
          actions = {
-            "sleep=20000",
+            "sleep=18000",
             "return=skipped unless economy needs marble or economy needs granite",
             "consume=wine ration",
-            "animate=working 20000",
-            "mine=stones 2 50 5 17",
-            "produce=marble:2",
-            "animate=working 20000",
-            "mine=stones 2 50 5 17",
-            "produce=marble granite"
+            "call=a_mine_produce_marble",
+            "call=a_mine_produce_marble",
+            "call=a_mine_produce_granite",
+            "call=a_mine_produce_marble",
+            "return=skipped"
          }
       },
-      mine_granite = {
-         -- TRANSLATORS: Completed/Skipped/Did not start mining granite because ...
-         descname = _"mining granite",
+      a_mine_produce_granite = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining and producing because ...
+         descname = _"mining and producing",
          actions = {
-            "sleep=20000",
-            "return=skipped unless economy needs marble or economy needs granite",
-            "consume=ration wine",
-            "animate=working 20000",
+            "animate=working 10500",
             "mine=stones 2 50 5 17",
-            "produce=granite marble",
-            "animate=working 20000",
+            "produce=granite",
+         }
+      },
+      a_mine_produce_marble = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining and producing because ...
+         descname = _"mining and producing",
+         actions = {
+            "animate=working 10500",
             "mine=stones 2 50 5 17",
-            "produce=granite:2"
+            "produce=marble",
          }
       },
    },

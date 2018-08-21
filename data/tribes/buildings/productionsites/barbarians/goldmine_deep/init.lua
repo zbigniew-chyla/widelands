@@ -60,15 +60,24 @@ tribes:new_productionsite_type {
          -- TRANSLATORS: Completed/Skipped/Did not start mining gold because ...
          descname = _"mining gold",
          actions = {
-            "sleep=42000",
+            "sleep=5000",
             "return=skipped unless economy needs gold_ore",
             "consume=snack",
-            "animate=working 18000",
+            "sleep=35000",
+            "call=mine_produce",
+            "call=mine_produce",
+            "call=mine_produce",
+            "call=mine_produce",
+            "return=skipped"
+         }
+      },
+      mine_produce = {
+         -- TRANSLATORS: Completed/Skipped/Did not start mining and producing because ...
+         descname = _"mining and producing",
+         actions = {
+            "animate=working 9500",
             "mine=gold 2 66 5 17",
-            "produce=gold_ore:2",
-            "animate=working 18000",
-            "mine=gold 2 66 5 17",
-            "produce=gold_ore:2"
+            "produce=gold_ore",
          }
       },
    },
