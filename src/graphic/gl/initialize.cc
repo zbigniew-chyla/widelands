@@ -48,7 +48,7 @@ SDL_GLContext initialize(
 	SDL_GL_MakeCurrent(sdl_window, gl_context);
 
 #ifdef USE_GLBINDING
-	glbinding::Binding::initialize(gl_context);
+	glbinding::Binding::initialize(SDL_GL_GetProcAddress);
 
 	// The undocumented command line argument --debug_gl_trace will set
 	// Trace::kYes. This will log every OpenGL call that is made, together with
