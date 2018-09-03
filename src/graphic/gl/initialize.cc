@@ -51,7 +51,7 @@ SDL_GLContext initialize(
 	// Documentation:
 	// https://github.com/cginternals/glbinding
 	// https://glbinding.org/
-	glbinding::Binding::initialize(glbinding::getCurrentContext());
+	glbinding::Binding::initialize(gl_context);
 
 	// The undocumented command line argument --debug_gl_trace will set
 	// Trace::kYes. This will log every OpenGL call that is made, together with
