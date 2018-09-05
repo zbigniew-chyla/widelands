@@ -73,8 +73,9 @@ tribes:new_productionsite_type {
          descname = _"constructing a ship",
          actions = {
             "checkmap=seafaring",
-            "sleep=20000",
+            "sleep=10000",
             "construct=atlanteans_shipconstruction buildship 6",
+            "sleep=10000",
          }
       },
       ship_preparation = {
